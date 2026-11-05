@@ -70,3 +70,40 @@ Fora da lista da skill, por escolha própria:
 - **`@agenda/shared` exporta o código-fonte TS direto**, sem etapa de build. O Next transpila via
   `transpilePackages`, e o SWC transpila na API.
 - O build de produção da API (`nest build -b swc`) fica para a fase 7.
+
+## D-11 — Ambiguidades resolvidas na fase 1 (2026-11-05)
+Aceitas pelo Planejador a partir da proposta do Executor:
+1. **Grade em relógio local** (`hora×60+min` múltiplo da granularidade), refinando D-06. Só difere
+   do "minutos desde 00:00" em dia de DST com granularidade que não divide 60.
+2. **Hora repetida na volta do DST:** só a 1ª ocorrência está na grade. A 2ª é
+   `HORARIO_FORA_DA_GRADE`. Trecho que termina dentro da hora repetida termina na 1ª ocorrência.
+3. **Borda de trecho em horário inexistente** vai para o fim do salto (02:30–05:00 em NY no dia do
+   salto vira 03:00–05:00).
+4. **"24:00"** é aceito como fim de trecho.
+5. **Preparo e limpeza podem usar o expediente contínuo do dia vizinho** (dom 22–24 + seg 00–02).
+6. **Cancelar ou remarcar** agendamento fora de PENDENTE/CONFIRMADO → `TRANSICAO_DE_STATUS_INVALIDA`.
+7. **Cliente marcando CONCLUIDO/NAO_COMPARECEU** → `ACESSO_NEGADO`. Já PENDENTE→CONFIRMADO só é
+   permitido ao estabelecimento: a restrição de papel é aplicada na camada de aplicação (fase 3).
+8. **Ordem na remarcação pelo cliente:** status → RN-18 → prazo (RN-15) → RN-11 → horário.
+9. **RN-18:** a falta conta se `inicio >= desbloqueadoEm`.
+10. **RN-17:** "início futuro" é `inicio > agora`, estrito.
+11. **Bloqueio fora do expediente** → `FORA_DO_EXPEDIENTE` (o expediente é checado antes do conflito).
+12. **RN-12:** quem chama calcula `livre` e `agendamentosNoDia`; o domínio só ordena.
+
+Desvios aceitos do contrato:
+- `Resultado<T>` tem um único genérico.
+- `podeCriar`/`podeRemarcar` recebem `profissional` e `cliente`.
+- Calendário aritmético próprio, com o deslocamento de fuso vindo do Luxon (`IANAZone.offset`), por
+  desempenho. Os testes cruzam os resultados com `DateTime`.
+
+## D-12 — Ambiguidades levantadas pelo Validador (2026-11-05)
+1. **Atendimento atravessando a meia-noite** é permitido quando o expediente é contínuo. Ele
+   pertence à data local do início, para o horizonte (RN-10) e para a contagem do RN-12.
+2. **Balcão com `inicio == agora`** não é passado: `HORARIO_NO_PASSADO` só vale para `inicio < agora`.
+3. **Horário extra encostado na jornada** forma um trecho contínuo, e um serviço pode atravessar a
+   emenda (fórmula do expediente efetivo, RN-04).
+4. **Bordas de trecho ou folga dentro da hora repetida** usam a 1ª ocorrência, como em D-11.2.
+5. **O texto da RN-07** foi alinhado a D-11.1 (grade em relógio local).
+6. **A ordem de checagem da remarcação** foi escrita na própria RN-16.
+7. **RN-13:** `proximosHorariosLivres` procura até `horizonteDias` a partir do dia pedido. Para o
+   cliente, o horizonte ainda filtra o resultado; o balcão pode ver além dele (RN-20).

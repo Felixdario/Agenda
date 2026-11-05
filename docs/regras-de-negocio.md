@@ -72,9 +72,14 @@ livre = expediente efetivo − bloqueios − blocos ocupados
 ```
 
 Um início `t` é oferecido se:
-1. `t` está na grade: minutos desde a meia-noite local são múltiplos de `granularidadeMin`;
+1. `t` está na grade: o horário de relógio local (`hora × 60 + minuto`, com segundos e ms zerados)
+   é múltiplo de `granularidadeMin`; na hora repetida da volta do horário de verão, só a 1ª ocorrência
+   está na grade (D-11);
 2. o bloco inteiro `[t − preparo, t + duração + limpeza)` cabe dentro de um único trecho livre
-   (preparo e limpeza também são tempo de trabalho e precisam estar dentro do expediente);
+   (preparo e limpeza também são tempo de trabalho e precisam estar dentro do expediente). Trechos
+   que encostam (jornada até 18:00 e horário extra 18:00–19:00, ou 22–24 de um dia e 00–02 do
+   seguinte) formam um único trecho contínuo. Um atendimento pode atravessar a emenda e pertence à
+   data local do seu início (D-12);
 3. RN-09 e RN-10 são respeitadas.
 
 Pedidos com início fora da grade são recusados com `HORARIO_FORA_DA_GRADE`.
@@ -122,7 +127,8 @@ transação. O horário antigo só é liberado se o novo for aceito; se o novo f
 Na checagem de conflito, o próprio agendamento é ignorado: remarcar para o mesmo horário, ou para um
 horário que se sobrepõe ao antigo, é permitido se não houver outro conflito. O cliente remarca no
 mesmo prazo de RN-15. O novo horário passa por todas as regras de criação, exceto RN-17. A cópia do
-serviço (RN-14) é mantida.
+serviço (RN-14) é mantida. Ordem de checagem na remarcação: status (RN-19) → RN-18 → prazo (RN-15,
+só cliente) → RN-11 → grade → RN-09 → RN-10 → expediente → conflito.
 
 **RN-17 — Limite de agendamentos ativos.** Um cliente pode ter no máximo `limiteAgendamentosAtivos`
 agendamentos `PENDENTE` ou `CONFIRMADO` com início futuro no estabelecimento
@@ -208,30 +214,36 @@ Corpo de erro: `{ "codigo": "...", "mensagem": "...", "detalhes"?: {...} }`.
 
 ## Matriz de rastreabilidade
 
-Preenchida a partir da fase 1. Coluna "Testes": arquivo e nome do teste.
+Preenchida a partir da fase 1. Coluna "Testes": arquivo e nome do teste. Os arquivos ficam em
+`apps/api/src/domain/`.
+
+Além dos testes listados, a suíte do Validador independente (`domain/__validacao__/`) cobre de novo
+RN-01..RN-20. São 93 testes de borda em `bordas.test.ts` e 6 propriedades em `oraculo.test.ts`, que
+comparam o motor com um oráculo ingênuo minuto a minuto feito com Luxon `DateTime`, em 6 fusos com
+datas de horário de verão.
 
 | Regra | Unitário (domínio) | Propriedade (fast-check) | Integração / E2E |
 | --- | --- | --- | --- |
-| RN-01 | — | — | — |
-| RN-02 | — | — | — |
-| RN-03 | — | — | — |
-| RN-04 | — | — | — |
-| RN-05 | — | — | — |
-| RN-06 | — | — | — |
-| RN-07 | — | — | — |
-| RN-08 | — | — | — |
-| RN-09 | — | — | — |
-| RN-10 | — | — | — |
-| RN-11 | — | — | — |
-| RN-12 | — | — | — |
-| RN-13 | — | — | — |
-| RN-14 | — | — | — |
-| RN-15 | — | — | — |
-| RN-16 | — | — | — |
-| RN-17 | — | — | — |
-| RN-18 | — | — | — |
-| RN-19 | — | — | — |
-| RN-20 | — | — | — |
+| RN-01 | `intervalo.test.ts`: "terminar 10:00 e começar 10:00 não se sobrepõem", "intervalos vazios são inválidos", "unir…", "subtrair…", "agendamento até 10:00 não impede início às 10:00" | `intervalo.test.ts` P6; `propriedades.test.ts` P1 | — |
+| RN-02 | `expediente.test.ts`: "horário inexistente … sem o empurrão do Luxon", "DST em NY (março)", "DST em NY (novembro)", "duração é em minutos reais", "Sao_Paulo não tem horário de verão", "calendário … viradas de mês e ano"; `disponibilidade.test.ts`: "preparo pode usar o expediente do dia anterior" | `propriedades.test.ts` P3, P4 (fusos SP/NY/Lisboa/Kolkata, dias de DST) | — |
+| RN-03 | `expediente.test.ts`: "jornada padrão é válida…", "trechos sobrepostos, vazios, que atravessam a meia-noite…", "dia sem intervalos é dia sem expediente" | `propriedades.test.ts` P2 | — |
+| RN-04 | `expediente.test.ts`: "folga no dia inteiro", "folga parcial", "feriado … vence horário extra", "folga vence horário extra", "horário extra soma ao expediente", "validação de exceções" | `propriedades.test.ts` P2 | — |
+| RN-05 | `disponibilidade.test.ts`: "bloqueio deixa o horário indisponível (HORARIO_INDISPONIVEL…)", "bloqueio não muda o expediente" | `propriedades.test.ts` P1 | — |
+| RN-06 | `disponibilidade.test.ts`: "preparo e limpeza ocupam a agenda", "cancelamento libera o horário na hora", "todos os status exceto CANCELADO ocupam agenda" | `propriedades.test.ts` P1 | — |
+| RN-07 | `disponibilidade.test.ts`: "início fora da grade…", "grade alinhada à meia-noite local (D-06)", "grade no fuso local (Asia/Kolkata)", "atravessando o almoço", "preparo antes do início do expediente", "limpeza depois do fim" | `propriedades.test.ts` P2, P4, P5 | — |
+| RN-08 | `disponibilidade.test.ts`: "serviço maior que o tempo restante do expediente", "serviço mais longo que o trecho inteiro" | `propriedades.test.ts` P2 | — |
+| RN-09 | `disponibilidade.test.ts`: "exatamente no limite da antecedência", "um instante antes do limite", "horário no passado nunca é oferecido" | `propriedades.test.ts` P3 | — |
+| RN-10 | `disponibilidade.test.ts`: "último dia do horizonte aberto e o dia seguinte fechado", "hoje é a data local", "virada de mês", "virada de ano", "horizonte zero" | `propriedades.test.ts` P3 | — |
+| RN-11 | `alocacao.test.ts`: "só profissional ativo que executa o serviço", "qualquer profissional ignora quem não executa…"; `politicas.test.ts`: "ordem de checagem na criação" | — | — |
+| RN-12 | `alocacao.test.ts`: "prefere quem tem menos agendamentos no dia", "empate por ordem de cadastro", "ordem não depende da entrada" | — | — |
+| RN-13 | `disponibilidade.test.ts`: "até 5 próximos horários livres…", "respeita n e o limite de dias", "qualquer profissional une os próximos horários" | `propriedades.test.ts` P5 | — |
+| RN-14 | `disponibilidade.test.ts`: "serviço editado não altera o bloco"; `politicas.test.ts`: "remarcação usa a cópia do serviço" | — | — |
+| RN-15 | `politicas.test.ts`: "cliente cancela até exatamente início − prazo", "depois do prazo só o estabelecimento", "só PENDENTE ou CONFIRMADO" | — | — |
+| RN-16 | `politicas.test.ts`: "remarcar para o mesmo horário", "para horário sobreposto ao antigo", "conflito com outro", "mesmo prazo de RN-15", "regras de criação, exceto RN-17", "só agendamento ativo" | `propriedades.test.ts` P7 | — |
+| RN-17 | `politicas.test.ts`: "cliente no limite não cria outro", "ativos = PENDENTE/CONFIRMADO com início futuro" | — | — |
+| RN-18 | `politicas.test.ts`: "limiteFaltas faltas fica bloqueado (antes de RN-17)", "faltas anteriores ao desbloqueio deixam de contar" | — | — |
+| RN-19 | `politicas.test.ts`: "nasce CONFIRMADO…", "transições (matriz completa)", "CONCLUIDO e NAO_COMPARECEU antes do início", "só o estabelecimento marca CONCLUIDO…" | — | — |
+| RN-20 | `disponibilidade.test.ts`: "sem antecedência mínima nem horizonte", "HORARIO_NO_PASSADO", "sujeito a expediente e conflitos"; `politicas.test.ts`: "ignora RN-09, RN-10, RN-17 e RN-18", "sujeito a passado, RN-11…" | `propriedades.test.ts` P3 (passado) | — |
 | RN-21 | — | — | — |
 | RN-22 | — | — | — |
 | RN-23 | — | — | — |
