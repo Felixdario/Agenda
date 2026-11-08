@@ -17,6 +17,7 @@ export default tseslint.config(
       '**/test-results/**',
       '**/next-env.d.ts',
       '.dupla/**',
+      '**/src/infra/prisma/generated/**',
     ],
   },
   js.configs.recommended,

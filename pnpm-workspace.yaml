@@ -5,6 +5,8 @@ packages:
 onlyBuiltDependencies:
   - '@swc/core'
   - sharp
+  - '@prisma/engines'
+  - prisma
 
 ignoredBuiltDependencies:
   - '@nestjs/core'

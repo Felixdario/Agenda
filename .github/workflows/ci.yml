@@ -39,6 +39,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - run: pnpm --filter @agenda/api db:generate
+
       - run: pnpm format:check
 
       - run: pnpm lint
@@ -46,3 +48,8 @@ jobs:
       - run: pnpm typecheck
 
       - run: pnpm test
+
+      # Fase 2: migrations num banco limpo + testes de integração no Postgres do service.
+      - run: pnpm --filter @agenda/api db:migrate
+
+      - run: pnpm --filter @agenda/api test:integration

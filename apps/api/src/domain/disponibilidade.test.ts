@@ -9,6 +9,7 @@ import {
   proximosHorariosLivres,
   proximosHorariosLivresDeVarios,
   unirHorarios,
+  validarBloqueio,
   validarHorario,
 } from './disponibilidade';
 import { JORNADA_VAZIA } from './expediente';
@@ -357,5 +358,30 @@ describe('ordem dos erros e dados inválidos', () => {
       agora: em('2026-03-01T00:00', NY),
     };
     expect(horas(horariosLivres({ ...contexto(ctx), dataLocal: SEGUNDA }), NY)[0]).toBe('00:00');
+  });
+});
+
+describe('D-05 — bloqueio sobre agendamento', () => {
+  const ocupacoes = [{ inicio: em('2026-03-02T10:00'), fim: em('2026-03-02T10:30') }];
+
+  it('RN-05: bloqueio sobre o bloco de um agendamento existente é recusado', () => {
+    const r = validarBloqueio(
+      { inicio: em('2026-03-02T10:15'), fim: em('2026-03-02T11:00') },
+      ocupacoes,
+    );
+    expect(r).toMatchObject({ ok: false, codigo: 'HORARIO_INDISPONIVEL' });
+  });
+
+  it('RN-05: bloqueio encostado no agendamento é aceito; bloqueio vazio é inválido', () => {
+    expect(
+      validarBloqueio({ inicio: em('2026-03-02T10:30'), fim: em('2026-03-02T11:00') }, ocupacoes)
+        .ok,
+    ).toBe(true);
+    expect(
+      validarBloqueio({ inicio: em('2026-03-02T11:00'), fim: em('2026-03-02T11:00') }, []),
+    ).toMatchObject({
+      ok: false,
+      codigo: 'DADOS_INVALIDOS',
+    });
   });
 });

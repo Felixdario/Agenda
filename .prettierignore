@@ -8,3 +8,4 @@ test-results
 docs
 pnpm-lock.yaml
 next-env.d.ts
+apps/api/src/infra/prisma/generated

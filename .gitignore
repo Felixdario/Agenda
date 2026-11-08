@@ -9,3 +9,6 @@ test-results
 .dupla/
 *.tsbuildinfo
 next-env.d.ts
+
+# Prisma Client gerado (db:generate)
+apps/api/src/infra/prisma/generated

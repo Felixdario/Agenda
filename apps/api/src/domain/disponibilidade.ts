@@ -1,6 +1,6 @@
 import { CodigoErro, StatusAgendamento } from '@agenda/shared';
 import { type Excecao, type Jornada, expedienteAoRedor } from './expediente';
-import { type Intervalo, contem, sobrepoe } from './intervalo';
+import { type Intervalo, contem, intervaloValido, sobrepoe } from './intervalo';
 import { formatarData, instanteLocal, lerData, paraLocal, zona } from './tempo';
 import { type Resultado, MINUTOS_POR_DIA, MS_POR_MINUTO, OK, falha } from './tipos';
 
@@ -249,4 +249,13 @@ export function proximosHorariosLivresDeVarios(
     ),
     n,
   );
+}
+
+/**
+ * RN-05 / D-05: um bloqueio novo não pode ser vazio nem cobrir o bloco de um agendamento que ocupa
+ * agenda. (Bloqueio sobre bloqueio é permitido.)
+ */
+export function validarBloqueio(bloqueio: Intervalo, ocupacoes: readonly Ocupacao[]): Resultado {
+  if (!intervaloValido(bloqueio)) return falha(CodigoErro.DADOS_INVALIDOS, { campo: 'intervalo' });
+  return ocupacoes.some((o) => sobrepoe(o, bloqueio)) ? falha(CodigoErro.HORARIO_INDISPONIVEL) : OK;
 }

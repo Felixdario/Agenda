@@ -107,3 +107,67 @@ Desvios aceitos do contrato:
 6. **A ordem de checagem da remarcação** foi escrita na própria RN-16.
 7. **RN-13:** `proximosHorariosLivres` procura até `horizonteDias` a partir do dia pedido. Para o
    cliente, o horizonte ainda filtra o resultado; o balcão pode ver além dele (RN-20).
+
+## D-13 — Constraint de exclusão em migration SQL manual (2026-11-08)
+O Prisma não modela `EXCLUDE USING gist` nem `CHECK`. Por isso a garantia do RN-21 fica numa
+migration escrita à mão, `apps/api/prisma/migrations/*_exclusao_agendamentos/migration.sql`, logo
+depois da migration gerada (`*_inicial`). Ela tem `CREATE EXTENSION IF NOT EXISTS btree_gist`, a
+constraint `agendamento_sem_sobreposicao` (`"profissionalId" WITH =`,
+`tstzrange("inicioBloco","fimBloco",'[)') WITH &&`, `WHERE status <> 'CANCELADO'`) e os CHECKs
+`bloco_valido` e `bloqueio_valido`.
+
+Verificado com o banco migrado: `prisma migrate diff --from-config-datasource --to-schema` e
+`prisma migrate dev --create-only` geram migration vazia. O Prisma ignora a constraint e não tenta
+removê-la. Os testes de integração rodam `migrate deploy` num banco limpo (`agenda_test`), e um
+deles confere que a constraint existe.
+
+Alternativa descartada: só checar no código. Uma escrita fora da aplicação, ou um bug, passaria; o
+teste C3 mostra o banco recusando um INSERT cru (23P01).
+
+Junto vêm estas decisões da camada de aplicação:
+- A trava `pg_advisory_xact_lock(hashtextextended(chave, 0))` é tomada em ordem estável e vale até
+  o fim da transação. "Qualquer profissional" trava todos os candidatos. O cliente também é travado
+  ao agendar, para o limite do RN-17 não ser furado por pedidos paralelos.
+- A 23P01 é tratada com SAVEPOINT. A transação continua viva, e o próximo profissional da ordem do
+  RN-12 é tentado na mesma requisição.
+- Idempotência (RN-22): a chave é reservada com `INSERT … ON CONFLICT DO UPDATE … WHERE expirada`,
+  na mesma transação do agendamento e antes de qualquer trava. Um pedido paralelo com a mesma chave
+  espera no índice da PK e depois lê a resposta gravada. A resposta gravada é o resultado final,
+  sucesso ou recusa de regra.
+
+Revisão da fase 2 (Validador independente):
+- **Trava antes da leitura.** Todo caso de uso de escrita toma as travas antes de ler qualquer
+  dado que será validado. `agendar` trava `cliente:<id>` e os profissionais candidatos (antes disso
+  só descobre os ids). `remarcar` trava a linha (`FOR UPDATE`) e depois `cliente`, o profissional
+  novo e o antigo. `criarBloqueio` trava o profissional. `mudarStatus` trava a linha e, em
+  NAO_COMPARECEU, o cliente (a contagem do RN-18). As advisory locks são tomadas em ordem
+  alfabética de chave. A linha travada vem sempre antes delas, e nenhum caso trava uma linha
+  depois de uma advisory lock, então não há ciclo.
+- **Bloqueio × agendamento** é protegido só pela advisory lock do profissional: não existe
+  constraint entre as duas tabelas. Todo caminho que escreve `Agendamento` ou `Bloqueio` precisa
+  passar pelos casos de uso, com `travar`. Escrita direta no banco só tem a garantia da constraint
+  entre agendamentos.
+- **Validade da chave:** ela expira exatamente em `criadaEm + 24 h`. Com `expiraEm <= agora`, a
+  chave pode ser reutilizada como nova.
+- **Erro lançado** (deadlock, timeout, falha de conexão) desfaz a transação inteira, inclusive a
+  reserva da chave. O próximo pedido com a mesma chave reexecuta. Só os resultados de regra
+  (sucesso ou recusa com `CodigoErro`) ficam gravados.
+- **Sessão do Postgres em UTC (RN-02).** O `@prisma/adapter-pg` 7.10.1 envia `Date` como texto sem
+  offset e, na leitura, troca o offset devolvido por `+00:00`. Gravação e leitura só ficam certas
+  com a sessão em UTC. `criarPrisma` cria o `pg.Pool` e roda `SET TIME ZONE 'UTC'` em cada conexão
+  nova, antes de qualquer consulta. Isso vence o default do servidor, o
+  `ALTER DATABASE … SET timezone` e o `options=-c TimeZone=…` da URL.
+
+## D-14 — Fechamento da fase 2 (trio) (2026-11-08)
+- O Validador independente achou 2 falhas reais, já corrigidas:
+  - **RN-17/RN-18:** o cliente era lido antes da trava, e o limite era furado sob concorrência.
+  - **RN-02:** os instantes dependiam do TimeZone da sessão Postgres.
+- Os 43 testes do Validador ficam como regressão em `apps/api/test/validacao/`. Entre eles há uma
+  carga mista de 15 × 40 operações paralelas, sem sobreposição e sem deadlock.
+- **Regra operacional:** todo acesso ao banco pela aplicação usa `criarPrisma`, que fixa a sessão em
+  UTC. Um script ou pool externo que não passe por ele perde essa garantia.
+- **Riscos aceitos, conservadores:**
+  - A lista de candidatos de "qualquer profissional" é lida antes da trava. Quem passar a executar o
+    serviço durante a requisição fica de fora, e quem foi desativado é filtrado depois.
+  - Cancelar não trava o cliente. Um pedido concorrente pode ser recusado a mais, mas a regra nunca é
+    violada.

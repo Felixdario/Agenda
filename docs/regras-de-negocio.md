@@ -229,22 +229,22 @@ datas de horário de verão.
 | RN-03 | `expediente.test.ts`: "jornada padrão é válida…", "trechos sobrepostos, vazios, que atravessam a meia-noite…", "dia sem intervalos é dia sem expediente" | `propriedades.test.ts` P2 | — |
 | RN-04 | `expediente.test.ts`: "folga no dia inteiro", "folga parcial", "feriado … vence horário extra", "folga vence horário extra", "horário extra soma ao expediente", "validação de exceções" | `propriedades.test.ts` P2 | — |
 | RN-05 | `disponibilidade.test.ts`: "bloqueio deixa o horário indisponível (HORARIO_INDISPONIVEL…)", "bloqueio não muda o expediente" | `propriedades.test.ts` P1 | — |
-| RN-06 | `disponibilidade.test.ts`: "preparo e limpeza ocupam a agenda", "cancelamento libera o horário na hora", "todos os status exceto CANCELADO ocupam agenda" | `propriedades.test.ts` P1 | — |
+| RN-06 | `disponibilidade.test.ts`: "preparo e limpeza ocupam a agenda", "cancelamento libera o horário na hora", "todos os status exceto CANCELADO ocupam agenda" | `propriedades.test.ts` P1 | `apps/api/test/integracao/ciclo.test.ts`: C6 "cancelar libera o horário e agendar de novo…"; `apps/api/test/integracao/garantia-banco.test.ts`: C3 "CANCELADO não ocupa" |
 | RN-07 | `disponibilidade.test.ts`: "início fora da grade…", "grade alinhada à meia-noite local (D-06)", "grade no fuso local (Asia/Kolkata)", "atravessando o almoço", "preparo antes do início do expediente", "limpeza depois do fim" | `propriedades.test.ts` P2, P4, P5 | — |
 | RN-08 | `disponibilidade.test.ts`: "serviço maior que o tempo restante do expediente", "serviço mais longo que o trecho inteiro" | `propriedades.test.ts` P2 | — |
 | RN-09 | `disponibilidade.test.ts`: "exatamente no limite da antecedência", "um instante antes do limite", "horário no passado nunca é oferecido" | `propriedades.test.ts` P3 | — |
 | RN-10 | `disponibilidade.test.ts`: "último dia do horizonte aberto e o dia seguinte fechado", "hoje é a data local", "virada de mês", "virada de ano", "horizonte zero" | `propriedades.test.ts` P3 | — |
 | RN-11 | `alocacao.test.ts`: "só profissional ativo que executa o serviço", "qualquer profissional ignora quem não executa…"; `politicas.test.ts`: "ordem de checagem na criação" | — | — |
-| RN-12 | `alocacao.test.ts`: "prefere quem tem menos agendamentos no dia", "empate por ordem de cadastro", "ordem não depende da entrada" | — | — |
-| RN-13 | `disponibilidade.test.ts`: "até 5 próximos horários livres…", "respeita n e o limite de dias", "qualquer profissional une os próximos horários" | `propriedades.test.ts` P5 | — |
+| RN-12 | `alocacao.test.ts`: "prefere quem tem menos agendamentos no dia", "empate por ordem de cadastro", "ordem não depende da entrada" | — | `apps/api/test/integracao/concorrencia.test.ts`: C2 "20 simultâneos em qualquer profissional → 3 ok e 17"; `apps/api/test/integracao/ciclo.test.ts`: "menos agendamentos no dia…", "23P01 no escolhido → tenta o próximo" |
+| RN-13 | `disponibilidade.test.ts`: "até 5 próximos horários livres…", "respeita n e o limite de dias", "qualquer profissional une os próximos horários" | `propriedades.test.ts` P5 | `apps/api/test/integracao/ciclo.test.ts`: "recusa por HORARIO_INDISPONIVEL traz até 5 próximos"; `apps/api/test/integracao/concorrencia.test.ts`: C1 (próximos na recusa) |
 | RN-14 | `disponibilidade.test.ts`: "serviço editado não altera o bloco"; `politicas.test.ts`: "remarcação usa a cópia do serviço" | — | — |
 | RN-15 | `politicas.test.ts`: "cliente cancela até exatamente início − prazo", "depois do prazo só o estabelecimento", "só PENDENTE ou CONFIRMADO" | — | — |
-| RN-16 | `politicas.test.ts`: "remarcar para o mesmo horário", "para horário sobreposto ao antigo", "conflito com outro", "mesmo prazo de RN-15", "regras de criação, exceto RN-17", "só agendamento ativo" | `propriedades.test.ts` P7 | — |
+| RN-16 | `politicas.test.ts`: "remarcar para o mesmo horário", "para horário sobreposto ao antigo", "conflito com outro", "mesmo prazo de RN-15", "regras de criação, exceto RN-17", "só agendamento ativo" | `propriedades.test.ts` P7 | `apps/api/test/integracao/concorrencia.test.ts`: C5 "remarcações concorrentes → só 1"; `apps/api/test/integracao/ciclo.test.ts`: "sobreposto ao próprio (UPDATE da mesma linha)", "recusada não muda nada" |
 | RN-17 | `politicas.test.ts`: "cliente no limite não cria outro", "ativos = PENDENTE/CONFIRMADO com início futuro" | — | — |
 | RN-18 | `politicas.test.ts`: "limiteFaltas faltas fica bloqueado (antes de RN-17)", "faltas anteriores ao desbloqueio deixam de contar" | — | — |
-| RN-19 | `politicas.test.ts`: "nasce CONFIRMADO…", "transições (matriz completa)", "CONCLUIDO e NAO_COMPARECEU antes do início", "só o estabelecimento marca CONCLUIDO…" | — | — |
+| RN-19 | `politicas.test.ts`: "nasce CONFIRMADO…", "transições (matriz completa)", "CONCLUIDO e NAO_COMPARECEU antes do início", "só o estabelecimento marca CONCLUIDO…" | — | `apps/api/test/integracao/ciclo.test.ts`: "PENDENTE → CONFIRMADO → CONCLUIDO, com histórico", "três NAO_COMPARECEU bloqueiam" |
 | RN-20 | `disponibilidade.test.ts`: "sem antecedência mínima nem horizonte", "HORARIO_NO_PASSADO", "sujeito a expediente e conflitos"; `politicas.test.ts`: "ignora RN-09, RN-10, RN-17 e RN-18", "sujeito a passado, RN-11…" | `propriedades.test.ts` P3 (passado) | — |
-| RN-21 | — | — | — |
-| RN-22 | — | — | — |
+| RN-21 | — | — | `apps/api/test/integracao/concorrencia.test.ts`: C1 "20 simultâneos → 1 sucesso e 19" (10 rodadas), C7 "bloqueio × agendamento"; `apps/api/test/integracao/garantia-banco.test.ts`: C3 "INSERT SQL cru sobreposto falha com 23P01" |
+| RN-22 | — | — | `apps/api/test/integracao/idempotencia.test.ts`: C4 "mesma chave 10× em paralelo", "corpo diferente", "vale 24 h" |
 | RN-23 | — | — | — |
 | RN-24 | — | — | — |

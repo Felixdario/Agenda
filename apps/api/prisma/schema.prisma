@@ -1,0 +1,264 @@
+// Schema da Agenda. Instantes em timestamptz(3); datas locais em date; horas locais "HH:mm".
+// A constraint de exclusão do Agendamento (RN-21) fica em migration SQL manual: ver D-13.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/infra/prisma/generated"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// Espelha `Papel` de @agenda/shared.
+enum Papel {
+  DONO
+  PROFISSIONAL
+  CLIENTE
+}
+
+/// Espelha `StatusAgendamento` de @agenda/shared.
+enum StatusAgendamento {
+  PENDENTE
+  CONFIRMADO
+  CONCLUIDO
+  CANCELADO
+  NAO_COMPARECEU
+}
+
+enum TipoExcecao {
+  FERIADO
+  FOLGA
+  HORARIO_EXTRA
+}
+
+enum TipoHistorico {
+  STATUS
+  REMARCACAO
+}
+
+enum StatusChaveIdempotencia {
+  EM_ANDAMENTO
+  CONCLUIDA
+}
+
+model Estabelecimento {
+  id                       String   @id @default(uuid()) @db.Uuid
+  slug                     String   @unique
+  nome                     String
+  /// Fuso IANA, ex. America/Sao_Paulo
+  fuso                     String
+  granularidadeMin         Int      @default(15)
+  antecedenciaMinimaMin    Int      @default(120)
+  horizonteDias            Int      @default(60)
+  prazoCancelamentoHoras   Int      @default(4)
+  limiteAgendamentosAtivos Int      @default(3)
+  limiteFaltas             Int      @default(3)
+  confirmacaoAutomatica    Boolean  @default(true)
+  criadoEm                 DateTime @default(now()) @db.Timestamptz(3)
+
+  usuarios      Usuario[]
+  profissionais Profissional[]
+  servicos      Servico[]
+  excecoes      Excecao[]
+  clientes      Cliente[]
+  agendamentos  Agendamento[]
+}
+
+model Usuario {
+  id                String   @id @default(uuid()) @db.Uuid
+  email             String   @unique
+  /// argon2id (fase 3)
+  senhaHash         String
+  papel             Papel
+  estabelecimentoId String?  @db.Uuid
+  profissionalId    String?  @unique @db.Uuid
+  criadoEm          DateTime @default(now()) @db.Timestamptz(3)
+
+  estabelecimento Estabelecimento? @relation(fields: [estabelecimentoId], references: [id])
+  profissional    Profissional?    @relation(fields: [profissionalId], references: [id])
+  clientes        Cliente[]
+  historicos      HistoricoStatus[]
+  chaves          ChaveIdempotencia[]
+}
+
+model Profissional {
+  id                String   @id @default(uuid()) @db.Uuid
+  estabelecimentoId String   @db.Uuid
+  nome              String
+  ativo             Boolean  @default(true)
+  criadoEm          DateTime @default(now()) @db.Timestamptz(3)
+
+  estabelecimento Estabelecimento       @relation(fields: [estabelecimentoId], references: [id])
+  usuario         Usuario?
+  servicos        ProfissionalServico[]
+  jornada         JornadaIntervalo[]
+  excecoes        Excecao[]
+  bloqueios       Bloqueio[]
+  agendamentos    Agendamento[]
+
+  @@index([estabelecimentoId])
+}
+
+model Servico {
+  id                String  @id @default(uuid()) @db.Uuid
+  estabelecimentoId String  @db.Uuid
+  nome              String
+  duracaoMin        Int
+  precoCentavos     Int
+  preparoMin        Int     @default(0)
+  limpezaMin        Int     @default(0)
+  ativo             Boolean @default(true)
+
+  estabelecimento Estabelecimento       @relation(fields: [estabelecimentoId], references: [id])
+  profissionais   ProfissionalServico[]
+  agendamentos    Agendamento[]
+
+  @@index([estabelecimentoId])
+}
+
+model ProfissionalServico {
+  profissionalId String @db.Uuid
+  servicoId      String @db.Uuid
+
+  profissional Profissional @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+  servico      Servico      @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+
+  @@id([profissionalId, servicoId])
+  @@index([servicoId])
+}
+
+model JornadaIntervalo {
+  id             String @id @default(uuid()) @db.Uuid
+  profissionalId String @db.Uuid
+  /// ISO: 1 = segunda … 7 = domingo
+  diaSemana      Int
+  /// "HH:mm"
+  inicio         String
+  /// "HH:mm" ou "24:00"
+  fim            String
+
+  profissional Profissional @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+
+  @@index([profissionalId])
+}
+
+model Excecao {
+  id                String      @id @default(uuid()) @db.Uuid
+  estabelecimentoId String      @db.Uuid
+  /// null = do estabelecimento (FERIADO)
+  profissionalId    String?     @db.Uuid
+  tipo              TipoExcecao
+  /// data local do estabelecimento
+  data              DateTime    @db.Date
+  inicio            String?
+  fim               String?
+
+  estabelecimento Estabelecimento @relation(fields: [estabelecimentoId], references: [id])
+  profissional    Profissional?   @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+
+  @@index([estabelecimentoId, data])
+  @@index([profissionalId, data])
+}
+
+model Bloqueio {
+  id             String   @id @default(uuid()) @db.Uuid
+  profissionalId String   @db.Uuid
+  inicio         DateTime @db.Timestamptz(3)
+  fim            DateTime @db.Timestamptz(3)
+  motivo         String?
+  criadoEm       DateTime @default(now()) @db.Timestamptz(3)
+
+  profissional Profissional @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+
+  @@index([profissionalId, inicio])
+}
+
+model Cliente {
+  id                String    @id @default(uuid()) @db.Uuid
+  usuarioId         String    @db.Uuid
+  estabelecimentoId String    @db.Uuid
+  /// RN-18: faltas com início anterior deixam de contar
+  desbloqueadoEm    DateTime? @db.Timestamptz(3)
+  criadoEm          DateTime  @default(now()) @db.Timestamptz(3)
+
+  usuario         Usuario         @relation(fields: [usuarioId], references: [id])
+  estabelecimento Estabelecimento @relation(fields: [estabelecimentoId], references: [id])
+  agendamentos    Agendamento[]
+
+  @@unique([usuarioId, estabelecimentoId])
+}
+
+model Agendamento {
+  id                String            @id @default(uuid()) @db.Uuid
+  estabelecimentoId String            @db.Uuid
+  profissionalId    String            @db.Uuid
+  clienteId         String            @db.Uuid
+  servicoId         String            @db.Uuid
+  // RN-14: cópia do serviço no momento da criação
+  servicoNome       String
+  duracaoMin        Int
+  precoCentavos     Int
+  preparoMin        Int
+  limpezaMin        Int
+  /// atendimento [inicio, fim)
+  inicio            DateTime          @db.Timestamptz(3)
+  fim               DateTime          @db.Timestamptz(3)
+  /// bloco ocupado [inicioBloco, fimBloco) = [inicio − preparo, fim + limpeza) (D-02)
+  inicioBloco       DateTime          @db.Timestamptz(3)
+  fimBloco          DateTime          @db.Timestamptz(3)
+  status            StatusAgendamento
+  lembreteEnviadoEm DateTime?         @db.Timestamptz(3)
+  criadoEm          DateTime          @db.Timestamptz(3)
+  atualizadoEm      DateTime          @db.Timestamptz(3)
+  versao            Int               @default(0)
+
+  estabelecimento Estabelecimento     @relation(fields: [estabelecimentoId], references: [id])
+  profissional    Profissional        @relation(fields: [profissionalId], references: [id])
+  cliente         Cliente             @relation(fields: [clienteId], references: [id])
+  servico         Servico             @relation(fields: [servicoId], references: [id])
+  historico       HistoricoStatus[]
+  chaves          ChaveIdempotencia[]
+
+  @@index([profissionalId, inicioBloco])
+  @@index([clienteId, status])
+}
+
+model HistoricoStatus {
+  id                     String             @id @default(uuid()) @db.Uuid
+  agendamentoId          String             @db.Uuid
+  tipo                   TipoHistorico
+  de                     StatusAgendamento?
+  para                   StatusAgendamento
+  autorUsuarioId         String             @db.Uuid
+  em                     DateTime           @db.Timestamptz(3)
+  motivo                 String?
+  inicioAnterior         DateTime?          @db.Timestamptz(3)
+  inicioNovo             DateTime?          @db.Timestamptz(3)
+  profissionalAnteriorId String?            @db.Uuid
+  profissionalNovoId     String?            @db.Uuid
+
+  agendamento Agendamento @relation(fields: [agendamentoId], references: [id], onDelete: Cascade)
+  autor       Usuario     @relation(fields: [autorUsuarioId], references: [id])
+
+  @@index([agendamentoId, em])
+}
+
+/// RN-22: chave por (usuário, chave), válida por 24 h.
+model ChaveIdempotencia {
+  usuarioId     String                  @db.Uuid
+  chave         String
+  hashCorpo     String
+  status        StatusChaveIdempotencia
+  respostaJson  Json?
+  agendamentoId String?                 @db.Uuid
+  criadaEm      DateTime                @db.Timestamptz(3)
+  expiraEm      DateTime                @db.Timestamptz(3)
+
+  usuario     Usuario      @relation(fields: [usuarioId], references: [id])
+  agendamento Agendamento? @relation(fields: [agendamentoId], references: [id])
+
+  @@id([usuarioId, chave])
+  @@index([expiraEm])
+}
