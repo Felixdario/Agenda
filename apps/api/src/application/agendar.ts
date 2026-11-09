@@ -38,7 +38,12 @@ export interface ComandoAgendar {
   readonly servicoId: string;
   /** `null` = "qualquer profissional" (RN-12). */
   readonly profissionalId: string | null;
-  readonly clienteId: string;
+  /**
+   * O cliente: pelo id da linha Cliente, ou pelo usuário (a linha Cliente daquele estabelecimento é
+   * criada sob demanda, dentro da transação — D-15). Informe exatamente um dos dois.
+   */
+  readonly clienteId?: string;
+  readonly clienteUsuarioId?: string;
   /** Epoch ms. */
   readonly inicio: number;
   readonly ator: AtorAplicacao;
@@ -83,10 +88,23 @@ export async function agendar(
   deps: Dependencias,
   cmd: ComandoAgendar,
 ): Promise<Resultado<AgendamentoDto>> {
+  return (await agendarDetalhado(deps, cmd)).resultado;
+}
+
+/**
+ * Como `agendar`, e diz se a resposta é a repetição de uma chave de idempotência já usada (RN-22).
+ * Quem notifica depois do commit (RN-24) só envia e-mail quando `repetido` é falso.
+ */
+export async function agendarDetalhado(
+  deps: Dependencias,
+  cmd: ComandoAgendar,
+): Promise<{ readonly resultado: Resultado<AgendamentoDto>; readonly repetido: boolean }> {
   return deps.uow.transacao(async (repo) => {
     const agora = deps.relogio.agora();
     const chave = cmd.chaveIdempotencia;
-    if (chave === undefined) return agendarNaTransacao(repo, cmd, agora);
+    if (chave === undefined) {
+      return { resultado: await agendarNaTransacao(repo, cmd, agora), repetido: false };
+    }
 
     // RN-22: a reserva vem antes de qualquer trava de profissional. Uma requisição paralela com a
     // mesma chave espera aqui (índice único) até esta transação terminar.
@@ -95,6 +113,7 @@ export async function agendar(
       servicoId: cmd.servicoId,
       profissionalId: cmd.profissionalId,
       clienteId: cmd.clienteId,
+      clienteUsuarioId: cmd.clienteUsuarioId,
       inicio: cmd.inicio,
     });
     const reserva = await repo.reservarChave({
@@ -106,8 +125,8 @@ export async function agendar(
     });
     if (!reserva.nova) {
       return reserva.hashCorpo === hashCorpo
-        ? (reserva.resposta as Resultado<AgendamentoDto>)
-        : falha(CodigoErro.CHAVE_IDEMPOTENCIA_REUTILIZADA);
+        ? { resultado: reserva.resposta as Resultado<AgendamentoDto>, repetido: true }
+        : { resultado: falha(CodigoErro.CHAVE_IDEMPOTENCIA_REUTILIZADA), repetido: false };
     }
     const resultado = await agendarNaTransacao(repo, cmd, agora);
     await repo.concluirChave({
@@ -116,7 +135,7 @@ export async function agendar(
       resposta: resultado,
       agendamentoId: resultado.ok ? resultado.valor.id : null,
     });
-    return resultado;
+    return { resultado, repetido: false };
   });
 }
 
@@ -125,6 +144,19 @@ async function agendarNaTransacao(
   cmd: ComandoAgendar,
   agora: number,
 ): Promise<Resultado<AgendamentoDto>> {
+  // 0) Resolve a linha Cliente (cria sob demanda quando vier só o usuário). Não é dado de validação.
+  let clienteId = cmd.clienteId;
+  if ((clienteId === undefined) === (cmd.clienteUsuarioId === undefined)) {
+    return falha(CodigoErro.DADOS_INVALIDOS, { campo: 'cliente' });
+  }
+  if (clienteId === undefined && cmd.clienteUsuarioId !== undefined) {
+    if ((await repo.estabelecimento(cmd.estabelecimentoId)) === null) {
+      return naoEncontrado('estabelecimento');
+    }
+    clienteId = await repo.garantirCliente(cmd.clienteUsuarioId, cmd.estabelecimentoId);
+  }
+  if (clienteId === undefined) return falha(CodigoErro.DADOS_INVALIDOS, { campo: 'cliente' });
+
   // 1) Antes da trava, só descobre QUEM travar (ids). Nada lido aqui entra na validação.
   const idsCandidatos =
     cmd.profissionalId !== null
@@ -132,10 +164,7 @@ async function agendarNaTransacao(
       : (await repo.profissionaisDoServico(cmd.estabelecimentoId, cmd.servicoId)).map((p) => p.id);
 
   // 2) D-05: trava cliente (RN-17/RN-18) e profissionais (conflito) numa ordem estável.
-  await repo.travar([
-    `cliente:${cmd.clienteId}`,
-    ...idsCandidatos.map((id) => `profissional:${id}`),
-  ]);
+  await repo.travar([`cliente:${clienteId}`, ...idsCandidatos.map((id) => `profissional:${id}`)]);
 
   // 3) Depois da trava, lê tudo o que será validado (READ COMMITTED: cada leitura vê o último
   //    estado confirmado, e quem mexe nesses dados espera a mesma trava).
@@ -145,7 +174,7 @@ async function agendarNaTransacao(
   if (servico === null || servico.estabelecimentoId !== estab.id || !servico.ativo) {
     return naoEncontrado('servico');
   }
-  const cliente = await repo.cliente(cmd.clienteId);
+  const cliente = await repo.cliente(clienteId);
   if (cliente === null || cliente.estabelecimentoId !== estab.id) return naoEncontrado('cliente');
 
   const candidatos: ProfissionalDados[] = [];

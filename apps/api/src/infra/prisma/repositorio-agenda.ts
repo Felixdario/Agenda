@@ -306,11 +306,26 @@ export class RepositorioAgendaPrisma implements RepositorioAgenda {
           inicioBloco: data(novo.inicioBloco),
           fimBloco: data(novo.fimBloco),
           atualizadoEm: data(novo.atualizadoEm),
+          // RN-24: remarcar rearma o lembrete.
+          lembreteEnviadoEm: null,
           versao: { increment: 1 },
         },
       }),
     );
     return this.depoisDoUpdate(id, r);
+  }
+
+  async garantirCliente(usuarioId: string, estabelecimentoId: string): Promise<string> {
+    // INSERT … ON CONFLICT: seguro com pedidos paralelos do mesmo usuário.
+    await this.db.$executeRaw`
+      INSERT INTO "Cliente" (id, "usuarioId", "estabelecimentoId", "criadoEm")
+      VALUES (gen_random_uuid(), ${usuarioId}::uuid, ${estabelecimentoId}::uuid, now())
+      ON CONFLICT ("usuarioId", "estabelecimentoId") DO NOTHING`;
+    const c = await this.db.cliente.findUniqueOrThrow({
+      where: { usuarioId_estabelecimentoId: { usuarioId, estabelecimentoId } },
+      select: { id: true },
+    });
+    return c.id;
   }
 
   async atualizarStatus(

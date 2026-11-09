@@ -1,21 +1,31 @@
 import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { carregarConfig } from './infra/config';
+import { criarDependencias } from './infra/composicao';
+import { criarAplicacao } from './infra/http';
+import { iniciarJobDeLembretes } from './infra/jobs';
+import { criarPrisma } from './infra/prisma';
 
-async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
-
-  const config = new DocumentBuilder()
-    .setTitle('Agenda API')
-    .setDescription('API de agendamentos')
-    .setVersion('0.0.0')
-    .build();
-  SwaggerModule.setup('docs', app, () => SwaggerModule.createDocument(app, config));
-
-  const port = Number(process.env.API_PORT ?? 3333);
-  await app.listen(port);
-  console.log(`API em http://localhost:${port} (docs em /docs)`);
+async function iniciar(): Promise<void> {
+  const config = carregarConfig();
+  const prisma = criarPrisma({ url: config.databaseUrl, maxConexoes: 10 });
+  const deps = criarDependencias(prisma, { smtp: config.smtp });
+  const app = await criarAplicacao(deps, {
+    producao: config.producao,
+    webOrigin: config.webOrigin,
+  });
+  // RN-24: lembretes a cada minuto (LEMBRETES_ATIVOS=false desliga).
+  const pararLembretes = config.lembretesAtivos ? iniciarJobDeLembretes(deps) : () => undefined;
+  app.enableShutdownHooks();
+  await app.listen(config.porta);
+  console.log(`API em http://localhost:${config.porta} (docs em /docs)`);
+  const encerrar = async () => {
+    pararLembretes();
+    await app.close();
+    await prisma.$disconnect();
+    process.exit(0);
+  };
+  process.once('SIGINT', () => void encerrar());
+  process.once('SIGTERM', () => void encerrar());
 }
 
-void bootstrap();
+void iniciar();

@@ -6,3 +6,8 @@ export * from './listar-horarios';
 export * from './mudar-status';
 export * from './portas';
 export * from './remarcar';
+export * from './auth';
+export * from './autorizacao';
+export * from './notificacoes';
+export * from './operacoes';
+export * from './portas-app';

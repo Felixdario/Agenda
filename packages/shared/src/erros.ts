@@ -20,6 +20,9 @@ export const CodigoErro = {
   ACESSO_NEGADO: 'ACESSO_NEGADO',
   NAO_ENCONTRADO: 'NAO_ENCONTRADO',
   DADOS_INVALIDOS: 'DADOS_INVALIDOS',
+  NAO_AUTENTICADO: 'NAO_AUTENTICADO',
+  /** Erro inesperado (bug, banco fora do ar). Nunca vem de regra de negócio. */
+  ERRO_INTERNO: 'ERRO_INTERNO',
 } as const;
 
 export type CodigoErro = (typeof CodigoErro)[keyof typeof CodigoErro];
@@ -43,6 +46,8 @@ export const HTTP_STATUS_POR_CODIGO = {
   ACESSO_NEGADO: 403,
   NAO_ENCONTRADO: 404,
   DADOS_INVALIDOS: 400,
+  NAO_AUTENTICADO: 401,
+  ERRO_INTERNO: 500,
 } as const satisfies Record<CodigoErro, number>;
 
 export const codigoErroSchema = z.enum(CODIGOS_ERRO);
@@ -55,3 +60,25 @@ export const corpoErroSchema = z.object({
 });
 
 export type CorpoErro = z.infer<typeof corpoErroSchema>;
+
+/** Mensagens amigáveis em português (a API usa; o front pode reaproveitar). */
+export const MENSAGEM_POR_CODIGO: Record<CodigoErro, string> = {
+  HORARIO_INDISPONIVEL: 'Esse horário acabou de ficar indisponível. Escolha outro.',
+  FORA_DO_EXPEDIENTE: 'Esse horário está fora do expediente do profissional.',
+  HORARIO_FORA_DA_GRADE: 'Esse horário não está na grade de horários do estabelecimento.',
+  ANTECEDENCIA_MINIMA: 'Esse horário está muito próximo. Escolha um horário com mais antecedência.',
+  HORARIO_NO_PASSADO: 'Esse horário já passou.',
+  ALEM_DO_HORIZONTE: 'Ainda não é possível agendar para essa data.',
+  PROFISSIONAL_NAO_EXECUTA_SERVICO: 'Esse profissional não realiza esse serviço.',
+  PRAZO_DE_CANCELAMENTO_ENCERRADO:
+    'O prazo para cancelar ou remarcar pela internet terminou. Fale com o estabelecimento.',
+  LIMITE_DE_AGENDAMENTOS: 'Você atingiu o limite de agendamentos ativos neste estabelecimento.',
+  CLIENTE_BLOQUEADO: 'Agendamento online indisponível para esta conta. Fale com o estabelecimento.',
+  TRANSICAO_DE_STATUS_INVALIDA: 'Essa ação não é possível no status atual do agendamento.',
+  CHAVE_IDEMPOTENCIA_REUTILIZADA: 'Esta chave de requisição já foi usada com outros dados.',
+  ACESSO_NEGADO: 'Você não tem permissão para fazer isso.',
+  NAO_ENCONTRADO: 'Não encontrado.',
+  DADOS_INVALIDOS: 'Alguns dados estão inválidos. Confira os campos.',
+  NAO_AUTENTICADO: 'Entre na sua conta para continuar.',
+  ERRO_INTERNO: 'Algo deu errado do nosso lado. Tente de novo em instantes.',
+};

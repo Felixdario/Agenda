@@ -171,3 +171,69 @@ Revisão da fase 2 (Validador independente):
     serviço durante a requisição fica de fora, e quem foi desativado é filtrado depois.
   - Cancelar não trava o cliente. Um pedido concorrente pode ser recusado a mais, mas a regra nunca é
     violada.
+
+## D-15 — API HTTP, sessão e e-mails (fase 3) (2026-11-08)
+Tomadas pelo Planejador no brief da fase 3 (.dupla/fase-3-api.md):
+1. **`NAO_AUTENTICADO` → 401** para quem não tem sessão, ou tem sessão inválida ou expirada. Fica
+   em `packages/shared/src/erros.ts` e na tabela de erros, conferida 1:1 por
+   `packages/shared/src/erros-tabela.test.ts`.
+2. **Sessão opaca em cookie httpOnly.**
+   - Tabela `Sessao` (o token aleatório de 32 bytes fica só no cliente; o banco guarda o SHA-256),
+     válida por 7 dias. Migration `*_sessao_e_nome`, criada com `migrate dev --create-only` e
+     aplicada com `migrate deploy`.
+   - Cookie `agenda_sessao`: httpOnly, SameSite=Lax, Path=/, Secure só em produção. O token também
+     vai no corpo do login, e a API aceita `Authorization: Bearer`. Logout revoga a sessão.
+   - **CSRF:** CORS só para `WEB_ORIGIN`, com credentials. Toda requisição que muda estado e traz o
+     cookie precisa de `Content-Type: application/json`; senão, 400 `DADOS_INVALIDOS`
+     (`detalhes.motivo = CONTENT_TYPE_JSON_OBRIGATORIO`).
+3. **argon2id com o pacote `argon2`.** O binário pré-compilado instalou e rodou no Windows, então
+   não foi preciso o `@node-rs/argon2`. Perfil 19 MiB / 2 iterações; em teste (`NODE_ENV=test`),
+   1 MiB / 1 iteração.
+4. **Registro de cliente:** `POST /auth/registro` cria um `Usuario` CLIENTE (`Usuario.nome` foi
+   acrescentado). A linha `Cliente` nasce sob demanda, com upsert por (usuário, estabelecimento):
+   dentro da transação de `agendar` (`clienteUsuarioId`) ou em `GET /auth/eu?estabelecimento=slug`.
+5. **Instantes em ISO UTC (`…Z`)** nas respostas, e `fuso` na resposta do estabelecimento.
+
+Escolhas desta fase:
+- **`ERRO_INTERNO` (500) entrou no enum `CodigoErro`**, com uma linha na tabela de erros. Assim o
+  corpo 500 também segue `corpoErroSchema`. A mensagem é genérica e não traz stack.
+- **`Usuario.senhaHash` passou a ser opcional.** O cliente criado no balcão por e-mail fica sem
+  senha utilizável, e o login recusa com a mesma resposta de senha errada.
+- **Login sem enumeração:** e-mail inexistente, senha errada e conta sem senha recebem a mesma
+  mensagem ("E-mail ou senha incorretos.") e o mesmo custo de argon2, contra um hash fictício.
+- **Mensagens:** as de erro em português ficam em `MENSAGEM_POR_CODIGO`, em @agenda/shared. As
+  mensagens do Zod usam `z.locales.ptBR()`, configurado em `packages/shared/src/api/comum.ts`, e
+  valem também para o front.
+- **Autorização** (RN-23) é feita por funções puras em `application/autorizacao.ts`. A composição
+  "autoriza → caso de uso → e-mail depois do commit" fica em `application/operacoes.ts`. Os
+  controllers só validam com os schemas de `packages/shared/src/api` e chamam essas operações;
+  nenhum importa Prisma. `:id` que não é UUID → 404.
+- **E-mail depois do commit:** `agendarDetalhado` diz se a resposta é a repetição de uma
+  Idempotency-Key, e a repetição não reenvia o e-mail. A falha de envio só é registrada.
+- **Lembrete:** `UPDATE … SET "lembreteEnviadoEm" = agora WHERE "lembreteEnviadoEm" IS NULL AND
+  status ativo AND inicio ∈ (agora, agora + 24 h] RETURNING id`, antes de enviar. Se o envio falhar
+  depois da marcação, o lembrete daquele agendamento se perde: preferimos isso a duplicar.
+  Remarcar zera a marca. Job em `infra/jobs` a cada minuto; `LEMBRETES_ATIVOS=false` desliga.
+- **Cadastros que mudam a disponibilidade** tomam a mesma trava `profissional:<id>` de agendar:
+  jornada, exceções (feriado trava todos os profissionais) e edição de profissional. Desbloquear
+  cliente toma `cliente:<id>`.
+- **Seed** (`db:seed` → `apps/api/src/infra/seed/demo.ts`): todos os agendamentos passam pelos
+  casos de uso. O histórico passado é criado com um relógio voltado 7 dias e concluído, faltado ou
+  cancelado com o relógio adiante. É idempotente: apaga só o estabelecimento demo e faz upsert das
+  contas. O PRNG tem semente na data de hoje.
+- **Autorização sem TOCTOU (RN-23) — resolvido.** Antes, a autorização de agendamento lia
+  estabelecimento e profissional fora da transação: um PROFISSIONAL podia cancelar, marcar falta
+  ou remarcar um agendamento que o dono acabara de mover para outro profissional. Agora
+  `remarcar` e `mudarStatus` (cancelar, confirmar, concluir, não compareceu) recebem um
+  `autorizar(agendamentoTravado)`. Ele roda logo depois do `SELECT … FOR UPDATE` e antes de
+  qualquer outra regra, sobre o estado atual da linha. Se negar, devolve 404/403 sem gravar nada.
+  A checagem de fora continua como atalho barato.
+  - O cliente do agendamento é imutável (`clienteId`); a regra confere que a linha travada tem o
+    mesmo `clienteId` lido fora.
+  - As demais autorizações do painel dependem só de dados imutáveis: o `profissionalId` de bloqueio
+    e de exceção, e o `estabelecimentoId` de profissional, serviço e cliente. As escritas de
+    cadastro ainda conferem o estabelecimento dentro da transação.
+  - Teste determinístico em `apps/api/test/integracao/http-toctou.test.ts`. Uma transação manual
+    trava a linha, o pedido de A fica esperando (confirmado no `pg_stat_activity`), a linha vai
+    para B, a trava é liberada, e o pedido termina em 403 sem mudar nada. Sem a correção, os 3
+    testes de corrida falham.

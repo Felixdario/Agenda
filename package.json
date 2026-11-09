@@ -12,7 +12,8 @@
     "lint": "corepack pnpm -r lint",
     "test": "corepack pnpm -r test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:integration": "corepack pnpm --filter @agenda/api test:integration"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

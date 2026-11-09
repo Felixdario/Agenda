@@ -142,6 +142,8 @@ export interface RepositorioAgenda {
   contarAgendamentos(profissionalId: string, intervalo: Intervalo): Promise<number>;
   /** D-05: `pg_advisory_xact_lock` por chave, em ordem estável. */
   travar(chaves: readonly string[]): Promise<void>;
+  /** D-15: linha Cliente de (usuário, estabelecimento), criada se não existir (upsert). */
+  garantirCliente(usuarioId: string, estabelecimentoId: string): Promise<string>;
   inserirAgendamento(novo: NovoAgendamento): Promise<Escrita<AgendamentoDados>>;
   atualizarHorario(
     id: string,

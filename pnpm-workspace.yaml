@@ -7,6 +7,7 @@ onlyBuiltDependencies:
   - sharp
   - '@prisma/engines'
   - prisma
+  - argon2
 
 ignoredBuiltDependencies:
   - '@nestjs/core'

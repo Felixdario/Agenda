@@ -69,18 +69,34 @@ model Estabelecimento {
 model Usuario {
   id                String   @id @default(uuid()) @db.Uuid
   email             String   @unique
-  /// argon2id (fase 3)
-  senhaHash         String
+  nome              String   @default("")
+  /// argon2id. null = conta criada no balcão, sem senha utilizável
+  senhaHash         String?
   papel             Papel
   estabelecimentoId String?  @db.Uuid
   profissionalId    String?  @unique @db.Uuid
   criadoEm          DateTime @default(now()) @db.Timestamptz(3)
 
-  estabelecimento Estabelecimento? @relation(fields: [estabelecimentoId], references: [id])
-  profissional    Profissional?    @relation(fields: [profissionalId], references: [id])
+  estabelecimento Estabelecimento?    @relation(fields: [estabelecimentoId], references: [id])
+  profissional    Profissional?       @relation(fields: [profissionalId], references: [id])
   clientes        Cliente[]
   historicos      HistoricoStatus[]
   chaves          ChaveIdempotencia[]
+  sessoes         Sessao[]
+}
+
+/// Sessão opaca (D-15): o cookie/Bearer leva o token; o banco guarda só o SHA-256.
+model Sessao {
+  id         String    @id @default(uuid()) @db.Uuid
+  usuarioId  String    @db.Uuid
+  tokenHash  String    @unique
+  criadaEm   DateTime  @db.Timestamptz(3)
+  expiraEm   DateTime  @db.Timestamptz(3)
+  revogadaEm DateTime? @db.Timestamptz(3)
+
+  usuario Usuario @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
 }
 
 model Profissional {

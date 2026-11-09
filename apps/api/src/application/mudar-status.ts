@@ -8,12 +8,18 @@ import {
   transicionar,
 } from '../domain';
 import { type AgendamentoDto, naoEncontrado, paraDto } from './contexto';
-import type { AtorAplicacao, Dependencias } from './portas';
+import type { AgendamentoDados, AtorAplicacao, Dependencias } from './portas';
 
 export interface ComandoStatus {
   readonly agendamentoId: string;
   readonly ator: AtorAplicacao;
   readonly motivo?: string;
+  /**
+   * Autorização sobre a linha JÁ TRAVADA (FOR UPDATE), antes de qualquer outra regra. Fecha a
+   * janela entre a autorização feita fora da transação e a escrita (RN-23): se o agendamento mudou
+   * de profissional nesse meio-tempo, a decisão é tomada sobre o estado atual. Negou → nada é gravado.
+   */
+  readonly autorizar?: (agendamento: AgendamentoDados) => Resultado;
 }
 
 /** RN-15 / RN-19: muda o status com trava da linha e grava o histórico. */
@@ -28,6 +34,8 @@ async function mudarStatus(
     // agendamento são serializadas.
     const ag = await repo.agendamento(cmd.agendamentoId, { travar: true });
     if (ag === null) return naoEncontrado('agendamento');
+    const autorizado = cmd.autorizar?.(ag);
+    if (autorizado !== undefined && !autorizado.ok) return autorizado;
     // NAO_COMPARECEU muda a contagem do RN-18, que agendar/remarcar leem sob a trava do cliente.
     if (para === StatusAgendamento.NAO_COMPARECEU) await repo.travar([`cliente:${ag.clienteId}`]);
     const estab = await repo.estabelecimento(ag.estabelecimentoId);

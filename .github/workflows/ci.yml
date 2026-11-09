@@ -53,3 +53,16 @@ jobs:
       - run: pnpm --filter @agenda/api db:migrate
 
       - run: pnpm --filter @agenda/api test:integration
+
+      # Fase 3: seed (2×, idempotente) e a API de pé respondendo /docs-json.
+      - run: pnpm --filter @agenda/api db:seed && pnpm --filter @agenda/api db:seed
+
+      - name: API sobe e publica o OpenAPI
+        env:
+          LEMBRETES_ATIVOS: 'false'
+        run: |
+          pnpm --filter @agenda/api start > api.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:3333/health && break; sleep 1; done
+          curl -sf http://localhost:3333/docs-json | grep -q '"/auth/login"'
+          curl -sf -X POST http://localhost:3333/auth/login -H 'content-type: application/json' \
+            -d '{"email":"dono@agenda.dev","senha":"demo1234"}' | grep -q '"token"'

@@ -17,7 +17,7 @@ import {
   paraDto,
 } from './contexto';
 import { situacaoDoCliente } from './agendar';
-import type { AtorAplicacao, Dependencias } from './portas';
+import type { AgendamentoDados, AtorAplicacao, Dependencias } from './portas';
 
 export interface ComandoRemarcar {
   readonly agendamentoId: string;
@@ -25,6 +25,12 @@ export interface ComandoRemarcar {
   /** Opcional: troca de profissional (RN-16). */
   readonly novoProfissionalId?: string;
   readonly ator: AtorAplicacao;
+  /**
+   * Autorização sobre a linha JÁ TRAVADA (FOR UPDATE), antes de qualquer outra regra. Fecha a
+   * janela entre a autorização feita fora da transação e a escrita (RN-23): se o agendamento mudou
+   * de profissional nesse meio-tempo, a decisão é tomada sobre o estado atual. Negou → nada é gravado.
+   */
+  readonly autorizar?: (agendamento: AgendamentoDados) => Resultado;
 }
 
 /**
@@ -40,6 +46,8 @@ export async function remarcar(
     // A linha do agendamento fica travada (FOR UPDATE) e é lida depois da trava.
     const ag = await repo.agendamento(cmd.agendamentoId, { travar: true });
     if (ag === null) return naoEncontrado('agendamento');
+    const autorizado = cmd.autorizar?.(ag);
+    if (autorizado !== undefined && !autorizado.ok) return autorizado;
     const novoProfissionalId = cmd.novoProfissionalId ?? ag.profissionalId;
 
     // D-05: cliente (RN-18), profissional novo (conflito) e antigo (troca de profissional), em

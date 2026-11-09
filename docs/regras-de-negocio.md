@@ -209,6 +209,8 @@ Ordem de checagem na criação, quando mais de uma regra falha: autenticação/a
 | `ACESSO_NEGADO` | 403 | RN-23 |
 | `NAO_ENCONTRADO` | 404 | RN-23 |
 | `DADOS_INVALIDOS` | 400 | validação Zod |
+| `NAO_AUTENTICADO` | 401 | RN-23 (sem sessão, ou sessão inválida/expirada) |
+| `ERRO_INTERNO` | 500 | erro inesperado (nunca regra de negócio) |
 
 Corpo de erro: `{ "codigo": "...", "mensagem": "...", "detalhes"?: {...} }`.
 
@@ -245,6 +247,6 @@ datas de horário de verão.
 | RN-19 | `politicas.test.ts`: "nasce CONFIRMADO…", "transições (matriz completa)", "CONCLUIDO e NAO_COMPARECEU antes do início", "só o estabelecimento marca CONCLUIDO…" | — | `apps/api/test/integracao/ciclo.test.ts`: "PENDENTE → CONFIRMADO → CONCLUIDO, com histórico", "três NAO_COMPARECEU bloqueiam" |
 | RN-20 | `disponibilidade.test.ts`: "sem antecedência mínima nem horizonte", "HORARIO_NO_PASSADO", "sujeito a expediente e conflitos"; `politicas.test.ts`: "ignora RN-09, RN-10, RN-17 e RN-18", "sujeito a passado, RN-11…" | `propriedades.test.ts` P3 (passado) | — |
 | RN-21 | — | — | `apps/api/test/integracao/concorrencia.test.ts`: C1 "20 simultâneos → 1 sucesso e 19" (10 rodadas), C7 "bloqueio × agendamento"; `apps/api/test/integracao/garantia-banco.test.ts`: C3 "INSERT SQL cru sobreposto falha com 23P01" |
-| RN-22 | — | — | `apps/api/test/integracao/idempotencia.test.ts`: C4 "mesma chave 10× em paralelo", "corpo diferente", "vale 24 h" |
-| RN-23 | — | — | — |
-| RN-24 | — | — | — |
+| RN-22 | — | — | `apps/api/test/integracao/idempotencia.test.ts`: C4 "mesma chave 10× em paralelo", "corpo diferente", "vale 24 h"; `apps/api/test/integracao/http-agendamentos.test.ts`: "Idempotency-Key pela API — replay idêntico e corpo diferente → 422" |
+| RN-23 | `apps/api/src/application/autorizacao.test.ts`: "cliente vê, cancela e remarca o próprio…", "outro cliente → 404", "dono … outro estabelecimento → 404", "profissional … colega → 403", painel | — | `apps/api/test/integracao/http-autorizacao.test.ts`: matriz papel × rota (historico, confirmar, agenda, cadastros, bloqueios, jornada, exceções, balcão); `apps/api/test/integracao/http-auth.test.ts`: login, 401, logout, expiração, CSRF; `apps/api/test/integracao/http-agendamentos.test.ts`: "todo CodigoErro alcançável via HTTP…"; `apps/api/test/integracao/http-toctou.test.ts`: autorização na linha travada (cancelar, falta, remarcar) |
+| RN-24 | — | — | `apps/api/test/integracao/http-agendamentos.test.ts`: "um e-mail de confirmação depois do commit; nenhum na recusa", "falha no envio não desfaz", "lembrete 24 h antes, uma vez; remarcar rearma; cancelado não recebe" |
