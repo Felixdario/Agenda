@@ -374,3 +374,16 @@ Pedidas pelo Planejador no brief da fase 6 (.dupla/fase-6-polimento.md); relató
    `apps/web/.impeccable/design.json` (movimento, sombra, breakpoints e componentes).
 7. **Exceção do detector:** a hachura (`repeating-linear-gradient`) gera um aviso consultivo de
    "listras decorativas". Fica, porque é o padrão do bloco ocupado e carrega significado.
+
+## D-19 — README e o "rodar em 3 comandos" (fase 7) (2026-11-09)
+- **`corepack pnpm demo`** (`scripts/demo.mjs`, só Node): cria o `.env` a partir do `.env.example`
+  se faltar, roda `db:migrate` (deploy) e `db:seed`, sobe a API e o web com
+  `pnpm -r --parallel … dev` e imprime as URLs e as contas quando os dois respondem.
+- **Sem build empacotado da API.** O `shared` exporta TypeScript direto (D-10) e o Nest depende de
+  `emitDecoratorMetadata`: o `tsc` geraria ESM sem extensão nos imports, que o Node não resolve, e
+  o esbuild não emite os metadados. A API roda em produção com o SWC transpilando na carga
+  (`start`). Um build de verdade pede um bundler com SWC (ou o `shared` compilado) e fica para
+  quando houver deploy.
+- **README em pt-BR e em inglês**, com o mesmo conteúdo, e 7 screenshots copiados de
+  `apps/web/.impeccable/review/` para `docs/screenshots/`. Sem badge de CI (não há remote) e sem
+  licença escolhida.

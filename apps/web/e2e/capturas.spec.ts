@@ -121,3 +121,18 @@ test('painel do profissional (1440)', async ({ page, context }) => {
   await page.waitForLoadState('networkidle');
   await capturar(page, '16-painel-minha-jornada', 1440);
 });
+
+test('dia de 40 atendimentos, no banco (1440)', async ({ page, context }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await entrar(context.request, 'dono@agenda.dev');
+  // Primeira quarta-feira depois de 15 dias: o dia do `db:seed:pior-caso`.
+  const base = dataLocal(Date.now() + 15 * 86_400_000);
+  const [a, m, d] = base.split('-').map(Number);
+  const dia = new Date(Date.UTC(a!, m! - 1, d!, 12));
+  const semana = dia.getUTCDay() === 0 ? 7 : dia.getUTCDay();
+  dia.setUTCDate(dia.getUTCDate() + ((3 - semana + 7) % 7));
+  await page.goto(`/painel?data=${dia.toISOString().slice(0, 10)}`);
+  await expect(page.getByTestId('agenda-grade')).toBeVisible();
+  await page.waitForLoadState('networkidle');
+  await capturar(page, '17-dia-40-atendimentos', 1440, false);
+});
