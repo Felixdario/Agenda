@@ -9,3 +9,6 @@ docs
 pnpm-lock.yaml
 next-env.d.ts
 apps/api/src/infra/prisma/generated
+
+# Arquivos gerados pelo impeccable
+apps/web/.impeccable/

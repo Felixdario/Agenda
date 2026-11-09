@@ -12,3 +12,7 @@ next-env.d.ts
 
 # Prisma Client gerado (db:generate)
 apps/api/src/infra/prisma/generated
+
+# Impeccable: rascunhos de decisão (a escolha fica em .impeccable/surfaces e no DESIGN.md)
+apps/web/.impeccable/mocks/
+apps/web/.impeccable/questions/

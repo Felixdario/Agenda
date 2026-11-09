@@ -237,3 +237,33 @@ Escolhas desta fase:
     trava a linha, o pedido de A fica esperando (confirmado no `pg_stat_activity`), a linha vai
     para B, a trava é liberada, e o pedido termina em 403 sem mudar nada. Sem a correção, os 3
     testes de corrida falham.
+
+## D-16 — Direção de design e nome do produto (fase 4) (2026-11-09)
+- **PRODUCT.md** foi feito com `impeccable init`, a partir de uma entrevista com o usuário. A
+  vitrine são as duas superfícies por igual: a reserva do cliente e o painel do estabelecimento. A
+  identidade é neutra, servindo a vários segmentos.
+- **Idiomas: pt-BR e inglês desde o início** (decisão do usuário). Toda string passa por i18n, e os
+  códigos de erro são traduzidos no front.
+- **Direção visual:**
+  - Duas rodadas no impeccable (`concept-seed`, modo Operate, `seed:2b07773378b285d7`):
+    - 1ª: Via do Cupom, Agenda de Balcão e Linhas do Dia;
+    - 2ª, mais ousada: Painel de Partidas, Console Grafite e Horário de Bolso.
+  - O usuário escolheu **o padrão da categoria, de propósito**, com o Booksy como régua de
+    acabamento. A convenção é executada por inteiro. A distinção fica em três elementos próprios: o
+    bloco ocupado (preparo, serviço e limpeza), a recusa 409 com os próximos horários e os números
+    tabulares.
+- **Nome: Pontual.** Os candidatos eram Pontual, Encaixe e Hora Marcada; o usuário escolheu
+  Pontual.
+- **DESIGN.md v0 antes da construção.** O fluxo do impeccable escreve o DESIGN.md só no fim, a partir
+  da interface pronta. O pedido do usuário exige o DESIGN.md na fase 4. Por isso o arquivo é um
+  contrato v0 e será reescrito na fase 6 pelo `impeccable document`; onde divergir, vale a interface
+  construída.
+- **design-taste-frontend:** usei as regras de telas de app (`references/app-screens.md`):
+  - uma família grotesca, títulos entre 18 e 32 px e números tabulares;
+  - primário quase preto e acento só no dado e no foco;
+  - borda ou sombra, nunca as duas;
+  - nada de violeta, gradiente ou ícone em círculo.
+
+  Com isso, o violeta do rascunho padrão foi trocado por cobalto.
+- **Contrato de direção** em `apps/web/.impeccable/surfaces/app.md`. Os rascunhos de decisão ficam
+  em `.impeccable/mocks/`, ignorados pelo git.
