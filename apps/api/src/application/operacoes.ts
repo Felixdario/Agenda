@@ -60,7 +60,15 @@ export interface EstabelecimentoPublico {
     horizonteDias: number;
     prazoCancelamentoHoras: number;
   };
-  servicos: { id: string; nome: string; duracaoMin: number; precoCentavos: number }[];
+  /** Preparo e limpeza vão junto para o cliente ver o bloco ocupado antes de confirmar (D-02). */
+  servicos: {
+    id: string;
+    nome: string;
+    duracaoMin: number;
+    precoCentavos: number;
+    preparoMin: number;
+    limpezaMin: number;
+  }[];
   profissionais: { id: string; nome: string; servicoIds: string[] }[];
 }
 
@@ -90,6 +98,8 @@ export async function estabelecimentoPublico(
         nome: s.nome,
         duracaoMin: s.duracaoMin,
         precoCentavos: s.precoCentavos,
+        preparoMin: s.preparoMin,
+        limpezaMin: s.limpezaMin,
       })),
       profissionais: profissionais.map((p) => ({
         id: p.id,
@@ -443,9 +453,10 @@ export async function agendaDoPainel(
     if (filtro !== undefined && profissionais.length === 0) return naoEncontrado('profissional');
     const dia = intervaloDoDia(dias, { id: e.id, politicas: e.politicas });
     const ids = profissionais.map((p) => p.id);
-    const [agendamentos, bloqueios] = [
+    const [agendamentos, bloqueios, excecoes] = [
       await repo.agendamentosNoIntervalo(ids, dia),
       await repo.bloqueiosNoIntervalo(ids, dia),
+      await repo.excecoesDaData(e.id, q.data),
     ];
     const agendas = [];
     for (const p of profissionais) {
@@ -469,9 +480,43 @@ export async function agendaDoPainel(
         bloqueios: bloqueios
           .filter((b) => b.profissionalId === p.id)
           .map((b) => ({ id: b.id, inicio: iso(b.inicio), fim: iso(b.fim), motivo: b.motivo })),
+        // Folgas e horários extras do profissional, mais os feriados (com id, para remover).
+        excecoes: excecoes
+          .filter((x) => x.profissionalId === p.id || x.tipo === 'FERIADO')
+          .map((x) => ({ id: x.id, tipo: x.tipo, inicio: x.inicio, fim: x.fim })),
       });
     }
     return ok({ data: q.data, fuso: e.politicas.fuso, profissionais: agendas });
+  });
+}
+
+/** GET /painel/estabelecimento: nome, fuso e políticas (DONO e PROFISSIONAL leem; só o DONO edita). */
+export async function estabelecimentoDoPainelCompleto(deps: DependenciasApp, ator: AtorHttp) {
+  const estab = estabelecimentoDoPainel(ator);
+  if (!estab.ok) return estab;
+  const e = await deps.cadastro.leitura((repo) => repo.estabelecimentoPorId(estab.valor));
+  if (e === null) return naoEncontrado('estabelecimento');
+  const { fuso, ...politicas } = e.politicas;
+  return ok({ id: e.id, slug: e.slug, nome: e.nome, fuso, politicas });
+}
+
+/** GET /painel/profissionais/:id/jornada (DONO ou o próprio PROFISSIONAL). */
+export async function jornadaDoPainel(
+  deps: DependenciasApp,
+  ator: AtorHttp,
+  profissionalId: string,
+) {
+  const p = await profissionalDoPainel(deps, ator, profissionalId);
+  if (!p.ok) return p;
+  const trechos = await deps.cadastro.leitura((repo) => repo.jornadaDoProfissional(profissionalId));
+  return ok({
+    profissionalId,
+    dias: Object.fromEntries(
+      DIAS_ISO.map((d) => [
+        String(d),
+        trechos.filter((t) => t.diaSemana === d).map((t) => ({ inicio: t.inicio, fim: t.fim })),
+      ]),
+    ),
   });
 }
 

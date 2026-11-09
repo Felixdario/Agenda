@@ -324,4 +324,52 @@ describe('painel', () => {
       ).status,
     ).toBe(400);
   });
+
+  it('leituras do painel (fase 5): estabelecimento, jornada, exceções do dia e serviço público com bloco', async () => {
+    const est = await api.http().get('/painel/estabelecimento').set('Authorization', prof);
+    expect(est.status).toBe(200);
+    expect(est.body).toMatchObject({ id: e.id, slug: e.slug, fuso: 'America/Sao_Paulo' });
+    expect(est.body.politicas).toMatchObject({ limiteFaltas: 3, confirmacaoAutomatica: true });
+    expect(est.body.politicas).not.toHaveProperty('fuso');
+
+    const jornada = await api
+      .http()
+      .get(`/painel/profissionais/${e.profissionalIds[0]}/jornada`)
+      .set('Authorization', prof);
+    expect(jornada.status).toBe(200);
+    expect(jornada.body.dias['1']).toEqual([
+      { inicio: '09:00', fim: '12:00' },
+      { inicio: '13:00', fim: '18:00' },
+    ]);
+    expect(jornada.body.dias['7']).toEqual([]);
+    // RN-23: o profissional não lê a jornada do colega.
+    expect(
+      (
+        await api
+          .http()
+          .get(`/painel/profissionais/${e.profissionalIds[1]}/jornada`)
+          .set('Authorization', prof)
+      ).status,
+    ).toBe(403);
+
+    const folga = await api.http().post('/painel/excecoes').set('Authorization', dono).send({
+      tipo: 'FOLGA',
+      profissionalId: e.profissionalIds[0],
+      data: '2026-03-02',
+      inicio: '15:00',
+      fim: '18:00',
+    });
+    const agenda = await api
+      .http()
+      .get('/painel/agenda?data=2026-03-02')
+      .set('Authorization', dono);
+    const [p1, p2] = agenda.body.profissionais;
+    expect(p1.excecoes).toEqual([
+      { id: folga.body.id, tipo: 'FOLGA', inicio: '15:00', fim: '18:00' },
+    ]);
+    expect(p2.excecoes).toEqual([]);
+
+    const pub = await api.http().get(`/estabelecimentos/${e.slug}`);
+    expect(pub.body.servicos[0]).toMatchObject({ preparoMin: 0, limpezaMin: 0 });
+  });
 });

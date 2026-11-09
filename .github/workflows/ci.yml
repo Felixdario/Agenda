@@ -66,3 +66,8 @@ jobs:
           curl -sf http://localhost:3333/docs-json | grep -q '"/auth/login"'
           curl -sf -X POST http://localhost:3333/auth/login -H 'content-type: application/json' \
             -d '{"email":"dono@agenda.dev","senha":"demo1234"}' | grep -q '"token"'
+
+      # Fase 5: E2E do front (Playwright no Chrome do runner). Sobe a API (:3334, banco agenda_e2e
+      # com migrate deploy + seed) e o web (next build + start, :3100) sozinho.
+      - name: E2E do front
+        run: pnpm test:e2e

@@ -6,6 +6,7 @@ import type {
   DadosServico,
   EstabelecimentoCompleto,
   ExcecaoDados,
+  ExcecaoListada,
   HistoricoDados,
   ProfissionalCadastro,
   RepositorioCadastro,
@@ -278,6 +279,14 @@ export class RepositorioCadastroPrisma implements RepositorioCadastro {
     });
   }
 
+  async jornadaDoProfissional(profissionalId: string) {
+    return this.db.jornadaIntervalo.findMany({
+      where: { profissionalId },
+      select: { diaSemana: true, inicio: true, fim: true },
+      orderBy: [{ diaSemana: 'asc' }, { inicio: 'asc' }],
+    });
+  }
+
   // ── exceções e bloqueios
   async criarExcecao(estabelecimentoId: string, e: Excecao & { profissionalId: string | null }) {
     return this.db.excecao.create({
@@ -297,6 +306,20 @@ export class RepositorioCadastroPrisma implements RepositorioCadastro {
       where: { id },
       select: { id: true, estabelecimentoId: true, profissionalId: true },
     });
+  }
+  async excecoesDaData(estabelecimentoId: string, dataLocal: string): Promise<ExcecaoListada[]> {
+    const linhas = await this.db.excecao.findMany({
+      where: { estabelecimentoId, data: colunaDate(dataLocal) },
+      orderBy: [{ tipo: 'asc' }, { inicio: 'asc' }],
+    });
+    return linhas.map((e) => ({
+      id: e.id,
+      profissionalId: e.profissionalId,
+      tipo: e.tipo,
+      data: dataLocal,
+      inicio: e.inicio,
+      fim: e.fim,
+    }));
   }
   async removerExcecao(id: string) {
     await this.db.excecao.delete({ where: { id } });

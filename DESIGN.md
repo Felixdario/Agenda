@@ -91,8 +91,9 @@ matizes: cobalto, `#c2410c`, `#0f766e` e `#a21caf`. Na casca, as cores vêm dos 
 ## Tipo
 
 - **Uma família: Hanken Grotesk**, carregada com `next/font`, em subset latin, nos pesos 400, 500,
-  600 e 700. Antes de adotar, conferir que `font-variant-numeric: tabular-nums` muda a largura dos
-  dígitos; se não mudar, trocar por Onest.
+  600 e 700. Os dígitos da Hanken já são de largura fixa por padrão (medido na fase 5: "1111" e
+  "0000" têm a mesma largura), então o objetivo dos números alinhados está cumprido.
+  `tabular-nums` continua declarado como garantia.
 - **Escala:** 12 / 14 / 16 / 20 / 28.
   - 28 / 700: título de página. É o único 700 da tela.
   - 20 / 600: título de folha e de seção.

@@ -1,0 +1,538 @@
+{
+  "metadados": {
+    "titulo": "Pontual",
+    "descricao": "Agendamento online sem conflito de horário.",
+    "tituloEstabelecimento": "{nome}: agendamento online"
+  },
+  "comum": {
+    "pontual": "Pontual",
+    "carregando": "Carregando",
+    "tentarDeNovo": "Tentar de novo",
+    "voltar": "Voltar",
+    "fechar": "Fechar",
+    "cancelar": "Cancelar",
+    "salvar": "Salvar",
+    "salvando": "Salvando…",
+    "editar": "Editar",
+    "remover": "Remover",
+    "continuar": "Continuar",
+    "ativo": "Ativo",
+    "inativo": "Inativo",
+    "demo": "Dados de demonstração",
+    "pularParaConteudo": "Pular para o conteúdo",
+    "semConexao": "Sem conexão. Mostrando a última versão carregada.",
+    "erroAoCarregar": "Não foi possível carregar esta informação.",
+    "naoEncontrado": "Não encontramos esta página.",
+    "irParaInicio": "Ir para o início",
+    "opcional": "opcional",
+    "nenhum": "—",
+    "duracao": {
+      "minutos": "{min} min",
+      "horas": "{h} h",
+      "horasMinutos": "{h} h {min} min"
+    },
+    "intervalo": "{inicio}–{fim}",
+    "separador": "·",
+    "idioma": "Idioma",
+    "idiomas": {
+      "pt-BR": "Português",
+      "en": "English"
+    },
+    "assinatura": "Agendamento por Pontual",
+    "fusoDoEstabelecimento": "Fuso: {fuso}"
+  },
+  "conta": {
+    "entrar": "Entrar",
+    "sair": "Sair",
+    "meusAgendamentos": "Meus agendamentos",
+    "painel": "Painel",
+    "menu": "Menu da conta",
+    "saiu": "Você saiu da sua conta."
+  },
+  "inicio": {
+    "titulo": "Pontual",
+    "descricao": "Agendamento online para negócios que vivem de horário marcado. O cliente reserva sozinho e o estabelecimento nunca tem dois atendimentos no mesmo horário.",
+    "verDemo": "Ver a página de agendamento",
+    "entrarPainel": "Entrar no painel",
+    "demoTitulo": "Demonstração",
+    "demoDescricao": "A Navalha & Café é um estabelecimento de demonstração, com três profissionais, seis serviços e duas semanas de agenda parcialmente ocupada."
+  },
+  "estabelecimento": {
+    "servicos": "Serviços",
+    "agendar": "Agendar",
+    "agendarServico": "Agendar {servico}",
+    "nenhumServico": "Este estabelecimento ainda não tem serviços disponíveis para agendar.",
+    "naoEncontrado": "Este estabelecimento não existe ou saiu do ar.",
+    "preparoLimpeza": "Reserva {total} com preparo e limpeza"
+  },
+  "fluxo": {
+    "titulo": "Agendar {servico}",
+    "tituloRemarcar": "Remarcar {servico}",
+    "passos": {
+      "profissional": "Com quem?",
+      "horario": "Quando?",
+      "revisao": "Revise e confirme"
+    },
+    "passoDe": "Passo {atual} de {total}",
+    "qualquerProfissional": "Qualquer profissional",
+    "qualquerDescricao": "Mostra todos os horários livres. O profissional é definido ao confirmar.",
+    "profissionalDescricao": "Só os horários livres de {nome}.",
+    "profissionalAtual": "Profissional atual",
+    "trocarProfissional": "Trocar profissional",
+    "com": "Com {nome}",
+    "comQualquer": "Com qualquer profissional",
+    "diasDisponiveis": "Dias",
+    "semHorarios": "Sem horários",
+    "diaSemHorarios": "Não há horários livres neste dia.",
+    "proximoDiaComVaga": "Ver {data}",
+    "nenhumDiaComVaga": "Não há horários livres nos próximos 14 dias com esta escolha.",
+    "tentarQualquer": "Ver qualquer profissional",
+    "horarios": "Horários de {data}",
+    "periodos": {
+      "manha": "Manhã",
+      "tarde": "Tarde",
+      "noite": "Noite"
+    },
+    "rotuloHorario": "{data}, {hora}, com {profissional}",
+    "rotuloHorarioQualquer": "{data}, {hora}, com qualquer profissional",
+    "horarioEscolhido": "{data}, {hora}",
+    "escolhaUmHorario": "Escolha um horário para continuar.",
+    "revisao": {
+      "servico": "Serviço",
+      "quando": "Quando",
+      "profissional": "Profissional",
+      "definidoAoConfirmar": "Qualquer profissional (definido ao confirmar)",
+      "preco": "Preço",
+      "politicas": "Políticas"
+    },
+    "politicaCancelamento": "Você pode cancelar ou remarcar pela internet até {data}, {hora} ({horas} h antes).",
+    "politicaSemPrazo": "Você pode cancelar ou remarcar pela internet até o horário marcado.",
+    "confirmar": "Confirmar agendamento",
+    "confirmarRemarcacao": "Confirmar novo horário",
+    "confirmando": "Confirmando…",
+    "entrarParaConfirmar": "Entrar para confirmar",
+    "entrarExplica": "Você precisa entrar ou criar uma conta. Sua escolha fica guardada.",
+    "sucesso": "Agendamento confirmado",
+    "sucessoPendente": "Pedido enviado. O estabelecimento vai confirmar.",
+    "sucessoRemarcar": "Agendamento remarcado",
+    "sucessoDescricao": "{data}, {hora}, {servico}",
+    "verMeus": "Ver meus agendamentos"
+  },
+  "bloco": {
+    "titulo": "Tempo reservado",
+    "explica": "O profissional fica reservado de {inicio} a {fim}: {total} no total.",
+    "preparo": "Preparo",
+    "atendimento": "Atendimento",
+    "limpeza": "Limpeza",
+    "segmento": "{nome}: {duracao}",
+    "rotulo": "Tempo reservado de {inicio} a {fim}: preparo {preparo}, atendimento {atendimento}, limpeza {limpeza}."
+  },
+  "recusa": {
+    "titulo": "Esse horário acabou de ser reservado",
+    "explica": "Alguém confirmou antes de você. Estes são os próximos horários livres:",
+    "perdido": "{hora}, indisponível",
+    "nenhum": "Não há outros horários livres nos próximos dias com esta escolha.",
+    "outroDia": "Escolher outro dia",
+    "marcando": "Marcando {hora}…"
+  },
+  "erros": {
+    "HORARIO_INDISPONIVEL": {
+      "mensagem": "Esse horário acabou de ficar indisponível.",
+      "acao": "Escolha um dos próximos horários livres."
+    },
+    "FORA_DO_EXPEDIENTE": {
+      "mensagem": "Esse horário está fora do expediente do profissional.",
+      "acao": "Escolha um horário dentro do expediente ou cadastre um horário extra."
+    },
+    "HORARIO_FORA_DA_GRADE": {
+      "mensagem": "Esse horário não está na grade do estabelecimento.",
+      "acao": "Use um horário de {granularidade} em {granularidade} minutos."
+    },
+    "ANTECEDENCIA_MINIMA": {
+      "mensagem": "Este estabelecimento pede pelo menos {antecedencia} de antecedência.",
+      "acao": "Escolha um horário mais adiante."
+    },
+    "HORARIO_NO_PASSADO": {
+      "mensagem": "Esse horário já passou.",
+      "acao": "Escolha um horário a partir de agora."
+    },
+    "ALEM_DO_HORIZONTE": {
+      "mensagem": "Ainda não é possível agendar para essa data.",
+      "acao": "A agenda está aberta até {ultimaData}."
+    },
+    "PROFISSIONAL_NAO_EXECUTA_SERVICO": {
+      "mensagem": "Esse profissional não realiza esse serviço.",
+      "acao": "Escolha outro profissional."
+    },
+    "PRAZO_DE_CANCELAMENTO_ENCERRADO": {
+      "mensagem": "O prazo para cancelar ou remarcar pela internet terminou.",
+      "acao": "Fale com {estabelecimento}."
+    },
+    "LIMITE_DE_AGENDAMENTOS": {
+      "mensagem": "Você já tem {limite} agendamentos ativos neste estabelecimento, o máximo permitido.",
+      "acao": "Ver meus agendamentos"
+    },
+    "CLIENTE_BLOQUEADO": {
+      "mensagem": "O agendamento pela internet está indisponível para esta conta, por faltas anteriores.",
+      "acao": "Fale com {estabelecimento} para liberar."
+    },
+    "TRANSICAO_DE_STATUS_INVALIDA": {
+      "mensagem": "Essa ação não é possível no status atual do agendamento.",
+      "acao": "Atualize a página para ver o status mais recente."
+    },
+    "CHAVE_IDEMPOTENCIA_REUTILIZADA": {
+      "mensagem": "Este pedido já foi enviado com outros dados.",
+      "acao": "Escolha o horário de novo."
+    },
+    "ACESSO_NEGADO": {
+      "mensagem": "Você não tem permissão para fazer isso.",
+      "acao": "Entre com outra conta."
+    },
+    "NAO_ENCONTRADO": {
+      "mensagem": "Não encontramos o que você procurava.",
+      "acao": "Volte e tente de novo."
+    },
+    "DADOS_INVALIDOS": {
+      "mensagem": "Alguns dados estão inválidos.",
+      "acao": "Confira os campos destacados."
+    },
+    "NAO_AUTENTICADO": {
+      "mensagem": "Sua sessão terminou.",
+      "acao": "Entre na sua conta para continuar."
+    },
+    "ERRO_INTERNO": {
+      "mensagem": "Algo deu errado do nosso lado.",
+      "acao": "Tente de novo em instantes."
+    },
+    "REDE": {
+      "mensagem": "Sem conexão com o servidor.",
+      "acao": "Confira sua internet e tente de novo."
+    }
+  },
+  "status": {
+    "PENDENTE": "Pendente",
+    "CONFIRMADO": "Confirmado",
+    "CONCLUIDO": "Concluído",
+    "CANCELADO": "Cancelado",
+    "NAO_COMPARECEU": "Falta"
+  },
+  "auth": {
+    "email": "E-mail",
+    "senha": "Senha",
+    "nome": "Nome",
+    "entrar": {
+      "titulo": "Entrar",
+      "descricao": "Use sua conta para agendar e acompanhar seus horários.",
+      "botao": "Entrar",
+      "entrando": "Entrando…",
+      "semConta": "Ainda não tem conta?",
+      "criarConta": "Criar conta",
+      "credenciais": "E-mail ou senha incorretos."
+    },
+    "demo": {
+      "titulo": "Contas de demonstração",
+      "descricao": "O botão só preenche o formulário. Você ainda clica em Entrar.",
+      "entrarComo": "Entrar como {papel}",
+      "senha": "Senha {senha}"
+    },
+    "papeis": {
+      "DONO": "Dono",
+      "PROFISSIONAL": "Profissional",
+      "CLIENTE": "Cliente"
+    },
+    "criar": {
+      "titulo": "Criar conta",
+      "descricao": "Para agendar, remarcar e cancelar sem telefonar.",
+      "senhaDica": "Pelo menos 8 caracteres.",
+      "botao": "Criar conta",
+      "criando": "Criando conta…",
+      "jaTem": "Já tem conta?",
+      "emailEmUso": "Já existe uma conta com este e-mail. Entre com ela."
+    },
+    "voltarAoAgendamento": "Depois de entrar, você volta para a revisão do seu horário."
+  },
+  "meus": {
+    "titulo": "Meus agendamentos",
+    "abas": {
+      "proximos": "Próximos",
+      "anteriores": "Anteriores"
+    },
+    "vazioProximos": "Você não tem agendamentos marcados.",
+    "vazioAnteriores": "Nenhum agendamento anterior.",
+    "agendarDemo": "Agendar na Navalha & Café",
+    "remarcar": "Remarcar",
+    "cancelar": "Cancelar",
+    "podeAte": "Cancelamento e remarcação pela internet até {data}, {hora}.",
+    "prazoEncerrado": "O prazo para cancelar ou remarcar pela internet terminou em {data}, {hora}. Fale com {estabelecimento}.",
+    "em": "em {estabelecimento}",
+    "cancelarDialogo": {
+      "titulo": "Cancelar este agendamento?",
+      "descricao": "{servico}, {data}, {hora}. O horário fica livre para outra pessoa na hora.",
+      "motivo": "Motivo (opcional)",
+      "manter": "Manter agendamento",
+      "confirmar": "Cancelar agendamento",
+      "cancelando": "Cancelando…",
+      "sucesso": "Agendamento cancelado"
+    }
+  },
+  "painel": {
+    "nav": {
+      "rotulo": "Navegação do painel",
+      "agenda": "Agenda",
+      "encaixe": "Encaixe",
+      "servicos": "Serviços",
+      "profissionais": "Profissionais",
+      "jornada": "Minha jornada",
+      "clientes": "Clientes",
+      "politicas": "Políticas",
+      "verPagina": "Ver página pública",
+      "abrirMenu": "Abrir menu",
+      "escopo": "Painel"
+    },
+    "agenda": {
+      "tituloHoje": "Agenda de hoje",
+      "titulo": "Agenda",
+      "anterior": "Dia anterior",
+      "proximo": "Próximo dia",
+      "hoje": "Hoje",
+      "data": "Data",
+      "novoEncaixe": "Encaixe",
+      "bloquear": "Bloquear horário",
+      "legenda": {
+        "rotulo": "Legenda",
+        "preparo": "Preparo e limpeza",
+        "bloqueio": "Bloqueio",
+        "agora": "Agora"
+      },
+      "agoraRotulo": "Agora, {hora}",
+      "semExpediente": "Sem expediente",
+      "folga": "Folga",
+      "folgaParcial": "Folga {inicio}–{fim}",
+      "horarioExtra": "Horário extra {inicio}–{fim}",
+      "feriado": "Feriado",
+      "removerExcecao": "Remover {rotulo}",
+      "vazio": "Nenhum atendimento neste dia.",
+      "resumo": "{atendimentos, plural, =0 {Nenhum atendimento} one {# atendimento} other {# atendimentos}}",
+      "cancelados": "{n, plural, one {# cancelado} other {# cancelados}}",
+      "bloqueio": "Bloqueio",
+      "bloqueioRotulo": "Bloqueio de {inicio} a {fim}",
+      "atendimentoRotulo": "{hora}, {cliente}, {servico}, {status}",
+      "selecionarDica": "Arraste numa coluna vazia para bloquear um intervalo.",
+      "selecao": "{inicio}–{fim}, {profissional}",
+      "encaixarAqui": "Encaixar aqui",
+      "semProfissionais": "Nenhum profissional ativo."
+    },
+    "detalhe": {
+      "titulo": "Atendimento",
+      "cliente": "Cliente",
+      "servico": "Serviço",
+      "horario": "Horário",
+      "profissional": "Profissional",
+      "preco": "Preço",
+      "historico": "Histórico",
+      "historicoVazio": "Sem eventos.",
+      "criado": "Agendado como {status}",
+      "mudou": "{de} para {para}",
+      "remarcado": "Remarcado de {anterior} para {novo}",
+      "motivo": "Motivo: {motivo}",
+      "acoes": "Ações",
+      "confirmar": "Confirmar",
+      "concluir": "Concluir",
+      "falta": "Marcar falta",
+      "remarcar": "Remarcar",
+      "cancelar": "Cancelar atendimento",
+      "aguardandoInicio": "Concluir e marcar falta ficam disponíveis a partir de {hora}.",
+      "semAcoes": "Este atendimento está encerrado.",
+      "sucesso": {
+        "confirmar": "Atendimento confirmado",
+        "concluir": "Atendimento concluído",
+        "nao-compareceu": "Falta registrada",
+        "cancelar": "Atendimento cancelado"
+      },
+      "cancelarDialogo": {
+        "titulo": "Cancelar o atendimento de {cliente}?",
+        "descricao": "{servico}, {data}, {hora}. O cliente recebe um e-mail e o horário fica livre."
+      }
+    },
+    "remarcar": {
+      "titulo": "Remarcar {cliente}",
+      "data": "Data",
+      "profissional": "Profissional",
+      "horarios": "Horários livres",
+      "nenhum": "Nenhum horário livre neste dia.",
+      "confirmar": "Remarcar para {hora}",
+      "escolha": "Escolha um horário"
+    },
+    "bloqueio": {
+      "titulo": "Bloquear horário",
+      "tipo": "Tipo",
+      "intervalo": "Intervalo",
+      "folga": "Folga",
+      "profissional": "Profissional",
+      "data": "Data",
+      "inicio": "Início",
+      "fim": "Fim",
+      "motivo": "Motivo (opcional)",
+      "diaInteiro": "Dia inteiro",
+      "criar": "Bloquear",
+      "criarFolga": "Registrar folga",
+      "sucesso": "Horário bloqueado",
+      "sucessoFolga": "Folga registrada",
+      "removerTitulo": "Remover este bloqueio?",
+      "removerDescricao": "{inicio}–{fim}, {profissional}. O horário volta a ficar livre para agendamento.",
+      "removerExcecaoTitulo": "Remover {rotulo}?",
+      "removerExcecaoDescricao": "O expediente de {profissional} volta ao normal neste dia.",
+      "removido": "Bloqueio removido",
+      "excecaoRemovida": "Exceção removida"
+    },
+    "encaixe": {
+      "titulo": "Encaixe",
+      "descricao": "Marque um cliente no balcão, em qualquer horário livre do expediente, sem antecedência mínima.",
+      "cliente": "Cliente",
+      "email": "E-mail do cliente",
+      "nome": "Nome do cliente",
+      "nomeDica": "Se o e-mail ainda não tiver cadastro, a conta é criada com este nome.",
+      "servico": "Serviço",
+      "profissional": "Profissional",
+      "qualquer": "Qualquer profissional",
+      "data": "Data",
+      "hora": "Hora",
+      "horaDica": "Em múltiplos de {granularidade} minutos.",
+      "sugestoes": "Horários livres neste dia",
+      "semSugestoes": "Nenhum horário livre neste dia.",
+      "criar": "Encaixar",
+      "criando": "Encaixando…",
+      "sucesso": "Encaixe feito",
+      "verNaAgenda": "Ver na agenda",
+      "escolha": "Escolha"
+    },
+    "servicos": {
+      "titulo": "Serviços",
+      "novo": "Novo serviço",
+      "total": "{n, plural, one {# serviço} other {# serviços}}",
+      "colunas": {
+        "nome": "Nome",
+        "duracao": "Duração",
+        "preparo": "Preparo",
+        "limpeza": "Limpeza",
+        "preco": "Preço",
+        "situacao": "Situação",
+        "acoes": "Ações"
+      },
+      "vazio": "Nenhum serviço cadastrado.",
+      "dialogo": {
+        "tituloNovo": "Novo serviço",
+        "tituloEditar": "Editar serviço",
+        "nome": "Nome",
+        "duracao": "Duração (min)",
+        "preco": "Preço (R$)",
+        "preparo": "Preparo (min)",
+        "limpeza": "Limpeza (min)",
+        "ativo": "Disponível para agendar",
+        "blocoDica": "Preparo e limpeza ocupam a agenda do profissional antes e depois do atendimento.",
+        "rn14": "Agendamentos já feitos mantêm os dados de quando foram marcados."
+      },
+      "salvo": "Serviço salvo"
+    },
+    "profissionais": {
+      "titulo": "Profissionais",
+      "novo": "Novo profissional",
+      "total": "{n, plural, one {# profissional} other {# profissionais}}",
+      "servicos": "Serviços",
+      "semServicos": "Nenhum serviço",
+      "jornada": "Jornada",
+      "editar": "Editar",
+      "vazio": "Nenhum profissional cadastrado.",
+      "dialogo": {
+        "tituloNovo": "Novo profissional",
+        "tituloEditar": "Editar profissional",
+        "nome": "Nome",
+        "ativo": "Ativo (aparece na página pública)",
+        "servicos": "Serviços que executa"
+      },
+      "salvo": "Profissional salvo"
+    },
+    "jornada": {
+      "titulo": "Jornada de {nome}",
+      "descricao": "Intervalos de trabalho por dia da semana, no fuso do estabelecimento.",
+      "dias": {
+        "1": "Segunda",
+        "2": "Terça",
+        "3": "Quarta",
+        "4": "Quinta",
+        "5": "Sexta",
+        "6": "Sábado",
+        "7": "Domingo"
+      },
+      "semExpediente": "Sem expediente",
+      "adicionar": "Adicionar intervalo",
+      "removerIntervalo": "Remover intervalo",
+      "inicio": "Início",
+      "fim": "Fim",
+      "salvar": "Salvar jornada",
+      "salva": "Jornada salva",
+      "total": "{horas} por semana"
+    },
+    "clientes": {
+      "titulo": "Clientes",
+      "total": "{n, plural, one {# cliente} other {# clientes}}",
+      "colunas": {
+        "nome": "Nome",
+        "email": "E-mail",
+        "ativos": "Ativos",
+        "faltas": "Faltas",
+        "situacao": "Situação",
+        "acoes": "Ações"
+      },
+      "bloqueado": "Bloqueado",
+      "liberado": "Liberado",
+      "desbloquear": "Desbloquear",
+      "vazio": "Nenhum cliente ainda.",
+      "linha2": "{ativos} ativos, {faltas} faltas",
+      "dialogo": {
+        "titulo": "Desbloquear {nome}?",
+        "descricao": "As faltas anteriores a hoje deixam de contar e {nome} volta a agendar pela internet.",
+        "confirmar": "Desbloquear"
+      },
+      "desbloqueado": "Cliente desbloqueado"
+    },
+    "politicas": {
+      "titulo": "Políticas",
+      "descricao": "Regras que valem para todo agendamento feito pela internet.",
+      "salvar": "Salvar políticas",
+      "salvas": "Políticas salvas",
+      "somenteDono": "Só o dono altera as políticas.",
+      "campos": {
+        "antecedenciaMinimaMin": {
+          "rotulo": "Antecedência mínima (min)",
+          "efeito": "O cliente marca com pelo menos {valor} de antecedência."
+        },
+        "horizonteDias": {
+          "rotulo": "Horizonte (dias)",
+          "efeito": "A agenda fica aberta para os próximos {valor} dias."
+        },
+        "prazoCancelamentoHoras": {
+          "rotulo": "Prazo de cancelamento (horas)",
+          "efeito": "O cliente cancela ou remarca pela internet até {valor} h antes."
+        },
+        "granularidadeMin": {
+          "rotulo": "Grade de horários (min)",
+          "efeito": "Os horários começam de {valor} em {valor} minutos."
+        },
+        "limiteAgendamentosAtivos": {
+          "rotulo": "Limite de agendamentos ativos",
+          "efeito": "Cada cliente tem no máximo {valor} agendamentos futuros ao mesmo tempo."
+        },
+        "limiteFaltas": {
+          "rotulo": "Limite de faltas",
+          "efeito": "Com {valor} faltas, o cliente deixa de agendar pela internet."
+        },
+        "confirmacaoAutomatica": {
+          "rotulo": "Confirmação automática",
+          "efeitoSim": "Os agendamentos nascem confirmados.",
+          "efeitoNao": "Os agendamentos ficam pendentes até o estabelecimento confirmar."
+        }
+      }
+    }
+  }
+}

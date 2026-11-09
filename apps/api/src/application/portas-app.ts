@@ -112,6 +112,15 @@ export interface ExcecaoDados {
   readonly profissionalId: string | null;
 }
 
+export interface ExcecaoListada {
+  readonly id: string;
+  readonly profissionalId: string | null;
+  readonly tipo: 'FOLGA' | 'FERIADO' | 'HORARIO_EXTRA';
+  readonly data: string;
+  readonly inicio: string | null;
+  readonly fim: string | null;
+}
+
 export type DadosServico = Omit<ServicoCadastro, 'id' | 'estabelecimentoId'>;
 export type DadosProfissional = { nome: string; ativo: boolean; servicoIds: readonly string[] };
 
@@ -165,6 +174,10 @@ export interface RepositorioCadastro {
     profissionalId: string,
     trechos: readonly { diaSemana: number; inicio: string; fim: string }[],
   ): Promise<void>;
+  /** Trechos da jornada semanal, em ordem de dia e de início. */
+  jornadaDoProfissional(
+    profissionalId: string,
+  ): Promise<{ diaSemana: number; inicio: string; fim: string }[]>;
 
   // exceções e bloqueios
   criarExcecao(
@@ -172,6 +185,8 @@ export interface RepositorioCadastro {
     e: Excecao & { profissionalId: string | null },
   ): Promise<{ id: string }>;
   excecaoPorId(id: string): Promise<ExcecaoDados | null>;
+  /** Exceções de uma data local (folgas, horários extras e feriados), para o painel. */
+  excecoesDaData(estabelecimentoId: string, data: string): Promise<ExcecaoListada[]>;
   removerExcecao(id: string): Promise<void>;
   bloqueioPorId(id: string): Promise<BloqueioDados | null>;
   removerBloqueio(id: string): Promise<void>;

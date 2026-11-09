@@ -337,7 +337,11 @@ export async function semearDemo(
       }
     }
   }
+  // O atendimento mais recente fica em aberto (CONFIRMADO): no painel, o dono ainda pode marcar
+  // "concluído" ou "falta" (RN-19 exige agora >= início), como num balcão de verdade.
+  const emAberto = passados.at(-1);
   for (const [i, ag] of passados.entries()) {
+    if (ag === emAberto) continue;
     relogio.instante = ag.inicio + 60 * 60_000;
     const cmd = { agendamentoId: ag.id, ator: balcao };
     const r =

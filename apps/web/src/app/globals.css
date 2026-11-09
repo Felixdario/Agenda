@@ -1,1 +1,358 @@
 @import 'tailwindcss';
+
+/*
+ * Pontual: tokens do DESIGN.md. O tema claro é o padrão; o escuro acompanha prefers-color-scheme
+ * (ou data-theme="dark" no <html>) e é um tema completo, não uma inversão.
+ */
+:root {
+  --ground: #f7f8fa;
+  --surface: #ffffff;
+  --raised: #f1f3f6;
+  --border: #e6e8ec;
+  --rule: #f0f1f4;
+  --control: #cfd4dc;
+  --text: #111418;
+  --muted: #5b6270;
+  --faint: #6b7280;
+  --primary: #15181d;
+  --on-primary: #ffffff;
+  --accent: #2453d6;
+  --accent-soft: #e9efff;
+  --positive: #1f7a4d;
+  --positive-bg: #e3f6eb;
+  --warning: #8a4b0a;
+  --warning-bg: #fff6e0;
+  --warning-line: #f3d48a;
+  --negative: #b4232b;
+  --negative-bg: #fdecec;
+  --hatch: #dfe3ea;
+  --hatch-line: #c4cad4;
+  --float-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
+  --scrim: rgb(17 20 24 / 0.32);
+
+  /* Cores de série dos profissionais: só em dados (borda da coluna e ponto da legenda). */
+  --serie-1: #2453d6;
+  --serie-2: #c2410c;
+  --serie-3: #0f766e;
+  --serie-4: #a21caf;
+
+  /* Movimento (DESIGN.md + animate). */
+  --ease-folha: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ground: #0e0f11;
+    --surface: #16181b;
+    --raised: #1f2226;
+    --border: #26292e;
+    --rule: #1d2024;
+    --control: #3a3f46;
+    --text: #f3f4f6;
+    --muted: #b3b8c0;
+    --faint: #959ba5;
+    --primary: #f3f4f6;
+    --on-primary: #111418;
+    --accent: #7c9cff;
+    --accent-soft: #1a2342;
+    --positive: #4cc38a;
+    --positive-bg: #12261b;
+    --warning: #f0b45a;
+    --warning-bg: #2a1f0f;
+    --warning-line: #5c4318;
+    --negative: #f07178;
+    --negative-bg: #2c1618;
+    --hatch: #2b2f35;
+    --hatch-line: #3d424a;
+    --float-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+    --scrim: rgb(0 0 0 / 0.55);
+    --serie-1: #7c9cff;
+    --serie-2: #fb8a4c;
+    --serie-3: #2dd4bf;
+    --serie-4: #e879f9;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --ground: #0e0f11;
+  --surface: #16181b;
+  --raised: #1f2226;
+  --border: #26292e;
+  --rule: #1d2024;
+  --control: #3a3f46;
+  --text: #f3f4f6;
+  --muted: #b3b8c0;
+  --faint: #959ba5;
+  --primary: #f3f4f6;
+  --on-primary: #111418;
+  --accent: #7c9cff;
+  --accent-soft: #1a2342;
+  --positive: #4cc38a;
+  --positive-bg: #12261b;
+  --warning: #f0b45a;
+  --warning-bg: #2a1f0f;
+  --warning-line: #5c4318;
+  --negative: #f07178;
+  --negative-bg: #2c1618;
+  --hatch: #2b2f35;
+  --hatch-line: #3d424a;
+  --float-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+  --scrim: rgb(0 0 0 / 0.55);
+  --serie-1: #7c9cff;
+  --serie-2: #fb8a4c;
+  --serie-3: #2dd4bf;
+  --serie-4: #e879f9;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-ground: var(--ground);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-border: var(--border);
+  --color-rule: var(--rule);
+  --color-control: var(--control);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-positive: var(--positive);
+  --color-positive-bg: var(--positive-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-line: var(--warning-line);
+  --color-negative: var(--negative);
+  --color-negative-bg: var(--negative-bg);
+  --color-hatch: var(--hatch);
+  --font-sans: var(--fonte-hanken), ui-sans-serif, system-ui, sans-serif;
+  --shadow-float: var(--float-shadow);
+  --radius-card: 16px;
+  --radius-field: 12px;
+}
+
+/* Escala do DESIGN.md: 12 / 14 / 16 / 20 / 28, com as entrelinhas dele. */
+@utility texto-12 {
+  font-size: 12px;
+  line-height: 16px;
+}
+@utility texto-14 {
+  font-size: 14px;
+  line-height: 20px;
+}
+@utility texto-16 {
+  font-size: 16px;
+  line-height: 24px;
+}
+@utility texto-20 {
+  font-size: 20px;
+  line-height: 28px;
+}
+@utility texto-28 {
+  font-size: 28px;
+  line-height: 34px;
+  letter-spacing: -0.01em;
+}
+
+@layer base {
+  html {
+    background: var(--ground);
+    color: var(--text);
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 20px;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--text);
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  input,
+  textarea,
+  select {
+    caret-color: var(--accent);
+  }
+  ::placeholder {
+    color: var(--faint);
+    opacity: 1;
+  }
+  a {
+    text-underline-offset: 3px;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  * {
+    scrollbar-color: var(--control) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+/* Algarismos tabulares em toda hora, duração, valor e contagem. */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hachura de preparo e limpeza (o bloco ocupado). */
+.hachura {
+  background-color: var(--hatch);
+  background-image: repeating-linear-gradient(135deg, transparent 0 4px, var(--hatch-line) 4px 5px);
+}
+
+/* ── Movimento ─────────────────────────────────────────────────────────────────────────────── */
+
+/* Pressionar: retorno imediato (100–160 ms). */
+.pressionavel {
+  transition:
+    transform 140ms var(--ease-out),
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+.pressionavel:active:not(:disabled):not([aria-disabled='true']) {
+  transform: scale(0.97);
+}
+
+/* Folha (sheet): entra em 240 ms, cubic-bezier(.2,.8,.2,1). De baixo no celular, da direita no desktop. */
+.folha {
+  transition:
+    transform 240ms var(--ease-folha),
+    opacity 240ms var(--ease-folha);
+}
+.folha[data-starting-style],
+.folha[data-ending-style] {
+  transform: translateY(100%);
+}
+@media (min-width: 768px) {
+  .folha[data-starting-style],
+  .folha[data-ending-style] {
+    transform: translateX(100%);
+  }
+}
+.folha[data-ending-style] {
+  transition-duration: 180ms;
+}
+
+.veu {
+  transition: opacity 240ms var(--ease-folha);
+}
+.veu[data-starting-style],
+.veu[data-ending-style] {
+  opacity: 0;
+}
+
+/* Diálogo centrado: não está preso a um gatilho, então cresce do centro. */
+.dialogo {
+  transition:
+    transform 200ms var(--ease-out),
+    opacity 200ms var(--ease-out);
+}
+.dialogo[data-starting-style],
+.dialogo[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+/* Menu e popover: nascem do gatilho. */
+.flutuante {
+  transform-origin: var(--transform-origin);
+  transition:
+    transform 160ms var(--ease-out),
+    opacity 160ms var(--ease-out);
+}
+.flutuante[data-starting-style],
+.flutuante[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+/* Troca de passo do fluxo: 180 ms, deslocamento de 8 px com fade. */
+@keyframes passo-entra {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+}
+.passo-entra {
+  animation: passo-entra 180ms var(--ease-folha);
+}
+
+/* Recusa 409: a pílula perdida é riscada e encolhe; as próximas entram a cada 30 ms. */
+.pilula-perdida {
+  animation: pilula-perdida 240ms var(--ease-out) forwards;
+}
+@keyframes pilula-perdida {
+  to {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+}
+@keyframes pilula-entra {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+}
+.pilula-entra {
+  animation: pilula-entra 200ms var(--ease-out) backwards;
+  animation-delay: calc(var(--ordem, 0) * 30ms + 120ms);
+}
+
+@keyframes passo-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressionavel:active:not(:disabled) {
+    transform: none;
+  }
+  .folha,
+  .dialogo,
+  .flutuante,
+  .veu {
+    transition: opacity 120ms ease;
+  }
+  .folha[data-starting-style],
+  .folha[data-ending-style],
+  .dialogo[data-starting-style],
+  .dialogo[data-ending-style],
+  .flutuante[data-starting-style],
+  .flutuante[data-ending-style] {
+    transform: none;
+    opacity: 0;
+  }
+  .passo-entra {
+    animation: passo-fade 120ms ease;
+  }
+  .pilula-perdida {
+    animation: none;
+    opacity: 0.6;
+  }
+  .pilula-entra {
+    animation: passo-fade 120ms ease backwards;
+    animation-delay: 0ms;
+  }
+}

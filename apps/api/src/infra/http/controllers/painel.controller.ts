@@ -36,6 +36,8 @@ import {
   desbloquearClientePainel,
   editarProfissionalPainel,
   editarServicoPainel,
+  estabelecimentoDoPainelCompleto,
+  jornadaDoPainel,
   listarClientesPainel,
   listarProfissionaisPainel,
   listarServicosPainel,
@@ -141,6 +143,12 @@ export class PainelController {
     return responder(await editarProfissionalPainel(this.deps, ator, id, dados));
   }
 
+  @Get('profissionais/:id/jornada')
+  @ApiOperation({ summary: 'Jornada semanal (DONO ou o próprio PROFISSIONAL)' })
+  async lerJornada(@AtorAtual() ator: AtorHttp, @Param('id', IdPipe) id: string) {
+    return responder(await jornadaDoPainel(this.deps, ator, id));
+  }
+
   @Put('profissionais/:id/jornada')
   @ApiOperation({ summary: 'Define a jornada semanal (DONO ou o próprio PROFISSIONAL), RN-03' })
   @Corpo(jornadaSchema)
@@ -182,6 +190,12 @@ export class PainelController {
   @ApiOperation({ summary: 'Desbloqueia cliente (DONO, RN-18)' })
   async desbloquear(@AtorAtual() ator: AtorHttp, @Param('id', IdPipe) id: string) {
     return responder(await desbloquearClientePainel(this.deps, ator, id));
+  }
+
+  @Get('estabelecimento')
+  @ApiOperation({ summary: 'Estabelecimento do painel: nome, slug, fuso e políticas' })
+  async estabelecimento(@AtorAtual() ator: AtorHttp) {
+    return responder(await estabelecimentoDoPainelCompleto(this.deps, ator));
   }
 
   @Patch('estabelecimento/politicas')

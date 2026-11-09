@@ -267,3 +267,69 @@ Escolhas desta fase:
   Com isso, o violeta do rascunho padrão foi trocado por cobalto.
 - **Contrato de direção** em `apps/web/.impeccable/surfaces/app.md`. Os rascunhos de decisão ficam
   em `.impeccable/mocks/`, ignorados pelo git.
+
+## D-17 — Front do Pontual (fase 5) (2026-11-09)
+Tomadas pelo Planejador no brief da fase 5 (.dupla/fase-5-front.md):
+1. **Proxy same-origin.** `next.config.ts` faz rewrite de `/api/:path*` para `${API_URL}/:path*`. O
+   navegador só fala com `/api/...`, o cookie httpOnly `agenda_sessao` fica first-party e toda
+   mutação manda `Content-Type: application/json`, inclusive o `DELETE` (`src/lib/api.ts`).
+2. **i18n com `next-intl`, sem prefixo de rota.** O locale vem do cookie `NEXT_LOCALE` (pt-BR
+   padrão, en). Dicionários em `apps/web/messages/{pt-BR,en}.json`, com as chaves tipadas
+   (`src/i18n/tipos.d.ts`: `t('chave.inexistente')` não compila). Um teste confere a paridade das
+   chaves e dos argumentos ICU, e outro confere `erros.<CODIGO>.{mensagem,acao}` para todo
+   `CodigoErro`. As mensagens do Zod seguem o idioma da interface (`z.config` no `Providers`).
+3. **Fuso.** Toda data e hora sai de `src/lib/tempo.ts`, com `Intl.DateTimeFormat` + `timeZone` do
+   estabelecimento. O teste troca o `TZ` do processo e o resultado não muda; o E2E 6 roda o
+   navegador em Tóquio.
+4. **Dados.** TanStack Query com as chaves em `src/lib/consultas.ts`. As respostas são validadas no
+   cliente com schemas Zod novos em `packages/shared/src/api/respostas.ts`. O erro HTTP vira
+   `ErroApi {codigo, mensagem, detalhes, status}`. Agendar, remarcar e cancelar invalidam horários,
+   "meus agendamentos", agendas do painel e o histórico.
+5. **Idempotency-Key** por tentativa (`src/lib/idempotencia.ts`): a mesma escolha reusa a chave
+   (clique repetido ou falha de rede); uma escolha nova, inclusive uma pílula da recusa 409, gera
+   outra; o sucesso encerra a chave.
+6. **Bibliotecas:** base-ui (Dialog, Menu, Select, Tabs), Sonner, clsx + cva, lucide-react,
+   react-hook-form + `@hookform/resolvers/zod`. O `motion` ficou de fora: todo movimento coube em
+   CSS (transições, `@starting-style` do base-ui e `@keyframes` com os valores do DESIGN.md), e ele
+   volta junto com o arrastar para remarcar. Hanken Grotesk
+   via `next/font`. Conferido no Chrome: os dígitos da Hanken já são tabulares por padrão ("1111" e
+   "0000" medem 89,6 px a 40 px, com `proportional-nums` ou com `tabular-nums`). A fonte não tem a
+   variante proporcional, então `tabular-nums` não muda a largura porque não há o que mudar: os
+   números já se alinham na coluna. A classe `.num` fica em todo número, para o caso de a fonte
+   mudar. **Ponto para o Planejador:** a regra literal do DESIGN.md ("se não mudar, trocar pela
+   Onest") levaria à Onest; mantive a Hanken porque o objetivo (algarismos de largura fixa) está
+   cumprido.
+7. **Autenticação no front.** `/entrar` e `/criar-conta`; o `src/proxy.ts` (o antigo middleware no
+   Next 16) consulta `GET /auth/eu` só para redirecionar: `/painel/*` exige DONO ou PROFISSIONAL e
+   `/meus-agendamentos` exige sessão. Um 401 no meio do uso leva a `/entrar?voltar=…`. A tela de
+   entrar mostra as 3 contas demo; "Entrar como…" só preenche o formulário.
+
+Escolhas desta fase (propostas ao Planejador):
+- **Leituras novas na API (aditivas).** A interface precisava de dados que a API não expunha:
+  - `GET /estabelecimentos/:slug` passa a trazer `preparoMin` e `limpezaMin` de cada serviço, para o
+    cliente ver o bloco ocupado antes de confirmar;
+  - `GET /painel/estabelecimento` (nome, slug, fuso e todas as políticas), para o shell e o
+    formulário de políticas;
+  - `GET /painel/profissionais/:id/jornada`, para o editor da jornada;
+  - `excecoes` (com `id`) em cada profissional de `GET /painel/agenda`, para remover folgas.
+  Tudo coberto por um teste novo em `http-painel.test.ts`. Nenhuma regra mudou.
+- **Seed:** o atendimento passado mais recente fica em aberto (CONFIRMADO). É o caso real do dono
+  que esqueceu de fechar o dia, e dá ao E2E 5 (e ao avaliador) um caminho limpo para "concluir",
+  sem relógio falso.
+- **Estado do fluxo de reserva na URL** (`servico`, `prof`, `data`, `inicio`, `passo`): sem login,
+  "Entrar para confirmar" leva a `/entrar?voltar=` e volta para a revisão com a mesma escolha.
+- **Recusa 409:** a pílula da recusa confirma direto, com chave nova; se perder de novo, a folha se
+  atualiza com a nova lista.
+- **Selects nativos nos formulários do painel** (encaixe, bloqueio, remarcar) e base-ui `Select`
+  só no seletor de idioma: no celular, o seletor do sistema é o mais acessível.
+- **"Sem horários"** no dia vazio: a API não informa o motivo (folga, lotado), e o front não
+  adivinha.
+- **CLIENTE_BLOQUEADO** mostra o nome do estabelecimento como contato: o cadastro não tem telefone
+  nem e-mail de contato, e nada foi inventado.
+- **Arrastar para remarcar (dnd kit) ficou de fora** (opcional no brief). Remarcar no painel é um
+  diálogo com a grade do balcão (RN-20).
+- **E2E:** Playwright no Chrome instalado (`channel: 'chrome'`, nada é baixado), banco
+  `agenda_e2e` com `migrate deploy` + seed a cada execução (`e2e/preparar-banco.mjs`), API em
+  :3334 e `next build && next start` em :3100 com `distDir` `.next-e2e`. Testes em série, cada um
+  com clientes novos (o limite de 3 ativos do RN-17). No CI, um passo roda o `test:e2e` depois do
+  seed.

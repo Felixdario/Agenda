@@ -1,0 +1,538 @@
+{
+  "metadados": {
+    "titulo": "Pontual",
+    "descricao": "Online booking with no double-booked slots.",
+    "tituloEstabelecimento": "{nome}: book online"
+  },
+  "comum": {
+    "pontual": "Pontual",
+    "carregando": "Loading",
+    "tentarDeNovo": "Try again",
+    "voltar": "Back",
+    "fechar": "Close",
+    "cancelar": "Cancel",
+    "salvar": "Save",
+    "salvando": "Saving…",
+    "editar": "Edit",
+    "remover": "Remove",
+    "continuar": "Continue",
+    "ativo": "Active",
+    "inativo": "Inactive",
+    "demo": "Demo data",
+    "pularParaConteudo": "Skip to content",
+    "semConexao": "No connection. Showing the last version loaded.",
+    "erroAoCarregar": "We couldn’t load this information.",
+    "naoEncontrado": "We couldn’t find this page.",
+    "irParaInicio": "Go to the start page",
+    "opcional": "optional",
+    "nenhum": "—",
+    "duracao": {
+      "minutos": "{min} min",
+      "horas": "{h} h",
+      "horasMinutos": "{h} h {min} min"
+    },
+    "intervalo": "{inicio}–{fim}",
+    "separador": "·",
+    "idioma": "Language",
+    "idiomas": {
+      "pt-BR": "Português",
+      "en": "English"
+    },
+    "assinatura": "Booking by Pontual",
+    "fusoDoEstabelecimento": "Time zone: {fuso}"
+  },
+  "conta": {
+    "entrar": "Sign in",
+    "sair": "Sign out",
+    "meusAgendamentos": "My bookings",
+    "painel": "Dashboard",
+    "menu": "Account menu",
+    "saiu": "You signed out."
+  },
+  "inicio": {
+    "titulo": "Pontual",
+    "descricao": "Online booking for businesses that run on appointments. Clients book on their own, and the business never has two appointments in the same slot.",
+    "verDemo": "See the booking page",
+    "entrarPainel": "Sign in to the dashboard",
+    "demoTitulo": "Demo",
+    "demoDescricao": "Navalha & Café is a demo business, with three staff members, six services and two weeks of a partly booked calendar."
+  },
+  "estabelecimento": {
+    "servicos": "Services",
+    "agendar": "Book",
+    "agendarServico": "Book {servico}",
+    "nenhumServico": "This business has no services available to book yet.",
+    "naoEncontrado": "This business doesn’t exist or is no longer online.",
+    "preparoLimpeza": "Takes {total} with preparation and cleanup"
+  },
+  "fluxo": {
+    "titulo": "Book {servico}",
+    "tituloRemarcar": "Reschedule {servico}",
+    "passos": {
+      "profissional": "With whom?",
+      "horario": "When?",
+      "revisao": "Review and confirm"
+    },
+    "passoDe": "Step {atual} of {total}",
+    "qualquerProfissional": "Any staff member",
+    "qualquerDescricao": "Shows every free time. The staff member is assigned when you confirm.",
+    "profissionalDescricao": "Only {nome}’s free times.",
+    "profissionalAtual": "Current staff member",
+    "trocarProfissional": "Change staff member",
+    "com": "With {nome}",
+    "comQualquer": "With any staff member",
+    "diasDisponiveis": "Days",
+    "semHorarios": "No times",
+    "diaSemHorarios": "There are no free times on this day.",
+    "proximoDiaComVaga": "See {data}",
+    "nenhumDiaComVaga": "There are no free times in the next 14 days for this choice.",
+    "tentarQualquer": "See any staff member",
+    "horarios": "Times on {data}",
+    "periodos": {
+      "manha": "Morning",
+      "tarde": "Afternoon",
+      "noite": "Evening"
+    },
+    "rotuloHorario": "{data}, {hora}, with {profissional}",
+    "rotuloHorarioQualquer": "{data}, {hora}, with any staff member",
+    "horarioEscolhido": "{data}, {hora}",
+    "escolhaUmHorario": "Choose a time to continue.",
+    "revisao": {
+      "servico": "Service",
+      "quando": "When",
+      "profissional": "Staff member",
+      "definidoAoConfirmar": "Any staff member (assigned when you confirm)",
+      "preco": "Price",
+      "politicas": "Policies"
+    },
+    "politicaCancelamento": "You can cancel or reschedule online until {data}, {hora} ({horas} h before).",
+    "politicaSemPrazo": "You can cancel or reschedule online until the booked time.",
+    "confirmar": "Confirm booking",
+    "confirmarRemarcacao": "Confirm new time",
+    "confirmando": "Confirming…",
+    "entrarParaConfirmar": "Sign in to confirm",
+    "entrarExplica": "You need to sign in or create an account. Your choice is kept.",
+    "sucesso": "Booking confirmed",
+    "sucessoPendente": "Request sent. The business will confirm it.",
+    "sucessoRemarcar": "Booking rescheduled",
+    "sucessoDescricao": "{data}, {hora}, {servico}",
+    "verMeus": "See my bookings"
+  },
+  "bloco": {
+    "titulo": "Reserved time",
+    "explica": "The staff member is reserved from {inicio} to {fim}: {total} in total.",
+    "preparo": "Preparation",
+    "atendimento": "Service",
+    "limpeza": "Cleanup",
+    "segmento": "{nome}: {duracao}",
+    "rotulo": "Reserved from {inicio} to {fim}: preparation {preparo}, service {atendimento}, cleanup {limpeza}."
+  },
+  "recusa": {
+    "titulo": "That time was just booked",
+    "explica": "Someone confirmed before you. These are the next free times:",
+    "perdido": "{hora}, unavailable",
+    "nenhum": "There are no other free times in the next days for this choice.",
+    "outroDia": "Choose another day",
+    "marcando": "Booking {hora}…"
+  },
+  "erros": {
+    "HORARIO_INDISPONIVEL": {
+      "mensagem": "That time just became unavailable.",
+      "acao": "Pick one of the next free times."
+    },
+    "FORA_DO_EXPEDIENTE": {
+      "mensagem": "That time is outside the staff member’s working hours.",
+      "acao": "Pick a time within working hours, or add extra hours."
+    },
+    "HORARIO_FORA_DA_GRADE": {
+      "mensagem": "That time is not on the business’s time grid.",
+      "acao": "Use a time in steps of {granularidade} minutes."
+    },
+    "ANTECEDENCIA_MINIMA": {
+      "mensagem": "This business needs at least {antecedencia} of notice.",
+      "acao": "Pick a later time."
+    },
+    "HORARIO_NO_PASSADO": {
+      "mensagem": "That time has already passed.",
+      "acao": "Pick a time from now on."
+    },
+    "ALEM_DO_HORIZONTE": {
+      "mensagem": "Booking for that date isn’t open yet.",
+      "acao": "The calendar is open until {ultimaData}."
+    },
+    "PROFISSIONAL_NAO_EXECUTA_SERVICO": {
+      "mensagem": "That staff member doesn’t offer this service.",
+      "acao": "Pick another staff member."
+    },
+    "PRAZO_DE_CANCELAMENTO_ENCERRADO": {
+      "mensagem": "The online deadline to cancel or reschedule has passed.",
+      "acao": "Contact {estabelecimento}."
+    },
+    "LIMITE_DE_AGENDAMENTOS": {
+      "mensagem": "You already have {limite} active bookings at this business, the most allowed.",
+      "acao": "See my bookings"
+    },
+    "CLIENTE_BLOQUEADO": {
+      "mensagem": "Online booking is unavailable for this account because of past no-shows.",
+      "acao": "Contact {estabelecimento} to have it unlocked."
+    },
+    "TRANSICAO_DE_STATUS_INVALIDA": {
+      "mensagem": "That action isn’t possible in the booking’s current status.",
+      "acao": "Refresh the page to see the latest status."
+    },
+    "CHAVE_IDEMPOTENCIA_REUTILIZADA": {
+      "mensagem": "This request was already sent with different data.",
+      "acao": "Choose the time again."
+    },
+    "ACESSO_NEGADO": {
+      "mensagem": "You don’t have permission to do that.",
+      "acao": "Sign in with another account."
+    },
+    "NAO_ENCONTRADO": {
+      "mensagem": "We couldn’t find what you were looking for.",
+      "acao": "Go back and try again."
+    },
+    "DADOS_INVALIDOS": {
+      "mensagem": "Some fields are invalid.",
+      "acao": "Check the highlighted fields."
+    },
+    "NAO_AUTENTICADO": {
+      "mensagem": "Your session has ended.",
+      "acao": "Sign in to continue."
+    },
+    "ERRO_INTERNO": {
+      "mensagem": "Something went wrong on our side.",
+      "acao": "Try again in a moment."
+    },
+    "REDE": {
+      "mensagem": "No connection to the server.",
+      "acao": "Check your connection and try again."
+    }
+  },
+  "status": {
+    "PENDENTE": "Pending",
+    "CONFIRMADO": "Confirmed",
+    "CONCLUIDO": "Completed",
+    "CANCELADO": "Cancelled",
+    "NAO_COMPARECEU": "No-show"
+  },
+  "auth": {
+    "email": "Email",
+    "senha": "Password",
+    "nome": "Name",
+    "entrar": {
+      "titulo": "Sign in",
+      "descricao": "Use your account to book and keep track of your appointments.",
+      "botao": "Sign in",
+      "entrando": "Signing in…",
+      "semConta": "No account yet?",
+      "criarConta": "Create account",
+      "credenciais": "Wrong email or password."
+    },
+    "demo": {
+      "titulo": "Demo accounts",
+      "descricao": "The button only fills in the form. You still click Sign in.",
+      "entrarComo": "Sign in as {papel}",
+      "senha": "Password {senha}"
+    },
+    "papeis": {
+      "DONO": "Owner",
+      "PROFISSIONAL": "Staff",
+      "CLIENTE": "Client"
+    },
+    "criar": {
+      "titulo": "Create account",
+      "descricao": "To book, reschedule and cancel without a phone call.",
+      "senhaDica": "At least 8 characters.",
+      "botao": "Create account",
+      "criando": "Creating account…",
+      "jaTem": "Already have an account?",
+      "emailEmUso": "An account with this email already exists. Sign in with it."
+    },
+    "voltarAoAgendamento": "After signing in, you’ll go back to reviewing your time."
+  },
+  "meus": {
+    "titulo": "My bookings",
+    "abas": {
+      "proximos": "Upcoming",
+      "anteriores": "Past"
+    },
+    "vazioProximos": "You have no upcoming bookings.",
+    "vazioAnteriores": "No past bookings.",
+    "agendarDemo": "Book at Navalha & Café",
+    "remarcar": "Reschedule",
+    "cancelar": "Cancel",
+    "podeAte": "Cancel or reschedule online until {data}, {hora}.",
+    "prazoEncerrado": "The online deadline to cancel or reschedule ended on {data}, {hora}. Contact {estabelecimento}.",
+    "em": "at {estabelecimento}",
+    "cancelarDialogo": {
+      "titulo": "Cancel this booking?",
+      "descricao": "{servico}, {data}, {hora}. The time becomes free for someone else right away.",
+      "motivo": "Reason (optional)",
+      "manter": "Keep booking",
+      "confirmar": "Cancel booking",
+      "cancelando": "Cancelling…",
+      "sucesso": "Booking cancelled"
+    }
+  },
+  "painel": {
+    "nav": {
+      "rotulo": "Dashboard navigation",
+      "agenda": "Calendar",
+      "encaixe": "Walk-in",
+      "servicos": "Services",
+      "profissionais": "Staff",
+      "jornada": "My hours",
+      "clientes": "Clients",
+      "politicas": "Policies",
+      "verPagina": "View public page",
+      "abrirMenu": "Open menu",
+      "escopo": "Dashboard"
+    },
+    "agenda": {
+      "tituloHoje": "Today’s calendar",
+      "titulo": "Calendar",
+      "anterior": "Previous day",
+      "proximo": "Next day",
+      "hoje": "Today",
+      "data": "Date",
+      "novoEncaixe": "Walk-in",
+      "bloquear": "Block time",
+      "legenda": {
+        "rotulo": "Legend",
+        "preparo": "Preparation and cleanup",
+        "bloqueio": "Blocked",
+        "agora": "Now"
+      },
+      "agoraRotulo": "Now, {hora}",
+      "semExpediente": "Not working",
+      "folga": "Day off",
+      "folgaParcial": "Time off {inicio}–{fim}",
+      "horarioExtra": "Extra hours {inicio}–{fim}",
+      "feriado": "Holiday",
+      "removerExcecao": "Remove {rotulo}",
+      "vazio": "No appointments on this day.",
+      "resumo": "{atendimentos, plural, =0 {No appointments} one {# appointment} other {# appointments}}",
+      "cancelados": "{n, plural, one {# cancelled} other {# cancelled}}",
+      "bloqueio": "Blocked",
+      "bloqueioRotulo": "Blocked from {inicio} to {fim}",
+      "atendimentoRotulo": "{hora}, {cliente}, {servico}, {status}",
+      "selecionarDica": "Drag on an empty column to block a time range.",
+      "selecao": "{inicio}–{fim}, {profissional}",
+      "encaixarAqui": "Walk-in here",
+      "semProfissionais": "No active staff members."
+    },
+    "detalhe": {
+      "titulo": "Appointment",
+      "cliente": "Client",
+      "servico": "Service",
+      "horario": "Time",
+      "profissional": "Staff member",
+      "preco": "Price",
+      "historico": "History",
+      "historicoVazio": "No events.",
+      "criado": "Booked as {status}",
+      "mudou": "{de} to {para}",
+      "remarcado": "Rescheduled from {anterior} to {novo}",
+      "motivo": "Reason: {motivo}",
+      "acoes": "Actions",
+      "confirmar": "Confirm",
+      "concluir": "Complete",
+      "falta": "Mark no-show",
+      "remarcar": "Reschedule",
+      "cancelar": "Cancel appointment",
+      "aguardandoInicio": "Complete and no-show become available from {hora}.",
+      "semAcoes": "This appointment is closed.",
+      "sucesso": {
+        "confirmar": "Appointment confirmed",
+        "concluir": "Appointment completed",
+        "nao-compareceu": "No-show recorded",
+        "cancelar": "Appointment cancelled"
+      },
+      "cancelarDialogo": {
+        "titulo": "Cancel {cliente}’s appointment?",
+        "descricao": "{servico}, {data}, {hora}. The client gets an email and the time becomes free."
+      }
+    },
+    "remarcar": {
+      "titulo": "Reschedule {cliente}",
+      "data": "Date",
+      "profissional": "Staff member",
+      "horarios": "Free times",
+      "nenhum": "No free times on this day.",
+      "confirmar": "Reschedule to {hora}",
+      "escolha": "Choose a time"
+    },
+    "bloqueio": {
+      "titulo": "Block time",
+      "tipo": "Type",
+      "intervalo": "Time range",
+      "folga": "Day off",
+      "profissional": "Staff member",
+      "data": "Date",
+      "inicio": "Start",
+      "fim": "End",
+      "motivo": "Reason (optional)",
+      "diaInteiro": "Whole day",
+      "criar": "Block",
+      "criarFolga": "Add time off",
+      "sucesso": "Time blocked",
+      "sucessoFolga": "Time off added",
+      "removerTitulo": "Remove this block?",
+      "removerDescricao": "{inicio}–{fim}, {profissional}. The time becomes bookable again.",
+      "removerExcecaoTitulo": "Remove {rotulo}?",
+      "removerExcecaoDescricao": "{profissional}’s hours go back to normal on this day.",
+      "removido": "Block removed",
+      "excecaoRemovida": "Exception removed"
+    },
+    "encaixe": {
+      "titulo": "Walk-in",
+      "descricao": "Book a client at the front desk, at any free time within working hours, with no minimum notice.",
+      "cliente": "Client",
+      "email": "Client email",
+      "nome": "Client name",
+      "nomeDica": "If the email has no account yet, one is created with this name.",
+      "servico": "Service",
+      "profissional": "Staff member",
+      "qualquer": "Any staff member",
+      "data": "Date",
+      "hora": "Time",
+      "horaDica": "In steps of {granularidade} minutes.",
+      "sugestoes": "Free times on this day",
+      "semSugestoes": "No free times on this day.",
+      "criar": "Book walk-in",
+      "criando": "Booking…",
+      "sucesso": "Walk-in booked",
+      "verNaAgenda": "See in calendar",
+      "escolha": "Choose"
+    },
+    "servicos": {
+      "titulo": "Services",
+      "novo": "New service",
+      "total": "{n, plural, one {# service} other {# services}}",
+      "colunas": {
+        "nome": "Name",
+        "duracao": "Duration",
+        "preparo": "Preparation",
+        "limpeza": "Cleanup",
+        "preco": "Price",
+        "situacao": "Status",
+        "acoes": "Actions"
+      },
+      "vazio": "No services yet.",
+      "dialogo": {
+        "tituloNovo": "New service",
+        "tituloEditar": "Edit service",
+        "nome": "Name",
+        "duracao": "Duration (min)",
+        "preco": "Price (R$)",
+        "preparo": "Preparation (min)",
+        "limpeza": "Cleanup (min)",
+        "ativo": "Available to book",
+        "blocoDica": "Preparation and cleanup take up the staff member’s calendar before and after the service.",
+        "rn14": "Existing bookings keep the details from when they were made."
+      },
+      "salvo": "Service saved"
+    },
+    "profissionais": {
+      "titulo": "Staff",
+      "novo": "New staff member",
+      "total": "{n, plural, one {# staff member} other {# staff members}}",
+      "servicos": "Services",
+      "semServicos": "No services",
+      "jornada": "Hours",
+      "editar": "Edit",
+      "vazio": "No staff members yet.",
+      "dialogo": {
+        "tituloNovo": "New staff member",
+        "tituloEditar": "Edit staff member",
+        "nome": "Name",
+        "ativo": "Active (shown on the public page)",
+        "servicos": "Services offered"
+      },
+      "salvo": "Staff member saved"
+    },
+    "jornada": {
+      "titulo": "{nome}’s hours",
+      "descricao": "Working time ranges for each weekday, in the business’s time zone.",
+      "dias": {
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+        "7": "Sunday"
+      },
+      "semExpediente": "Not working",
+      "adicionar": "Add time range",
+      "removerIntervalo": "Remove time range",
+      "inicio": "Start",
+      "fim": "End",
+      "salvar": "Save hours",
+      "salva": "Hours saved",
+      "total": "{horas} per week"
+    },
+    "clientes": {
+      "titulo": "Clients",
+      "total": "{n, plural, one {# client} other {# clients}}",
+      "colunas": {
+        "nome": "Name",
+        "email": "Email",
+        "ativos": "Active",
+        "faltas": "No-shows",
+        "situacao": "Status",
+        "acoes": "Actions"
+      },
+      "bloqueado": "Blocked",
+      "liberado": "Allowed",
+      "desbloquear": "Unblock",
+      "vazio": "No clients yet.",
+      "linha2": "{ativos} active, {faltas} no-shows",
+      "dialogo": {
+        "titulo": "Unblock {nome}?",
+        "descricao": "No-shows before today stop counting and {nome} can book online again.",
+        "confirmar": "Unblock"
+      },
+      "desbloqueado": "Client unblocked"
+    },
+    "politicas": {
+      "titulo": "Policies",
+      "descricao": "Rules that apply to every online booking.",
+      "salvar": "Save policies",
+      "salvas": "Policies saved",
+      "somenteDono": "Only the owner can change policies.",
+      "campos": {
+        "antecedenciaMinimaMin": {
+          "rotulo": "Minimum notice (min)",
+          "efeito": "Clients book at least {valor} ahead."
+        },
+        "horizonteDias": {
+          "rotulo": "Booking window (days)",
+          "efeito": "The calendar is open for the next {valor} days."
+        },
+        "prazoCancelamentoHoras": {
+          "rotulo": "Cancellation deadline (hours)",
+          "efeito": "Clients cancel or reschedule online up to {valor} h before."
+        },
+        "granularidadeMin": {
+          "rotulo": "Time grid (min)",
+          "efeito": "Times start every {valor} minutes."
+        },
+        "limiteAgendamentosAtivos": {
+          "rotulo": "Active booking limit",
+          "efeito": "Each client has at most {valor} upcoming bookings at a time."
+        },
+        "limiteFaltas": {
+          "rotulo": "No-show limit",
+          "efeito": "After {valor} no-shows, the client can no longer book online."
+        },
+        "confirmacaoAutomatica": {
+          "rotulo": "Automatic confirmation",
+          "efeitoSim": "Bookings are confirmed right away.",
+          "efeitoNao": "Bookings stay pending until the business confirms them."
+        }
+      }
+    }
+  }
+}

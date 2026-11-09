@@ -1,6 +1,7 @@
 node_modules
 dist
 .next
+.next-e2e
 .env
 .env.local
 coverage
@@ -16,3 +17,4 @@ apps/api/src/infra/prisma/generated
 # Impeccable: rascunhos de decisão (a escolha fica em .impeccable/surfaces e no DESIGN.md)
 apps/web/.impeccable/mocks/
 apps/web/.impeccable/questions/
+apps/web/.impeccable/review/
