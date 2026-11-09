@@ -125,6 +125,7 @@ function FormBloqueio({
             carregando={pendente}
             onClick={enviar}
             data-testid="criar-bloqueio"
+            exigeRede
           >
             {tipo === 'intervalo' ? t('criar') : t('criarFolga')}
           </Botao>
@@ -248,7 +249,7 @@ export function DialogoConfirmar({
       rodape={
         <>
           <Botao onClick={aoFechar}>{t('cancelar')}</Botao>
-          <Botao variante="perigo" carregando={pendente} onClick={aoConfirmar}>
+          <Botao variante="perigo" carregando={pendente} onClick={aoConfirmar} exigeRede>
             {confirmar}
           </Botao>
         </>
@@ -313,6 +314,7 @@ function FormRemarcar({
           <Botao
             variante="primario"
             disabled={inicio === undefined}
+            exigeRede
             carregando={remarcar.isPending}
             onClick={() => {
               if (inicio === undefined) return;

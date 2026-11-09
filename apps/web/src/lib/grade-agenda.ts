@@ -1,8 +1,11 @@
 import type { AgendaPainel } from '@agenda/shared';
 import { minutosDoDia } from './tempo';
 
-/** Pixels por minuto na grade do painel: 15 min = 24 px, uma hora = 96 px. */
-export const PX_POR_MINUTO = 1.6;
+/**
+ * Pixels por minuto na grade do painel: 15 min = 26,4 px, e o cartão de um atendimento de 15 min
+ * fica com 24,4 px (alvo mínimo de toque do WCAG 2.2, 2.5.8). Uma hora = 105,6 px.
+ */
+export const PX_POR_MINUTO = 1.76;
 
 /**
  * Faixa de horas exibida: do primeiro expediente (ou bloco ocupado) ao último, arredondada para

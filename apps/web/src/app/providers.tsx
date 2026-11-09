@@ -5,6 +5,7 @@ import { useLocale } from 'next-intl';
 import { type ReactNode, useState } from 'react';
 import { Toaster } from 'sonner';
 import { z } from 'zod';
+import { AvisoOffline } from '@/components/comum/aviso-offline';
 import { ehErroApi } from '@/lib/erros';
 
 /** Mensagens de validação do Zod no idioma da interface (o shared configura pt-BR por padrão). */
@@ -21,15 +22,20 @@ export function Providers({ children }: { children: ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: 30_000,
+            // Voltou a rede: revalida tudo o que está na tela, mesmo o que ainda parecia fresco.
+            refetchOnReconnect: 'always',
             retry: (tentativas, erro) =>
               !(ehErroApi(erro) && erro.status >= 400 && erro.status < 500) && tentativas < 2,
           },
-          mutations: { retry: false },
+          // Mutação sem rede falha na hora (REDE) em vez de ficar na fila e disparar sozinha ao
+          // reconectar: o usuário decide reenviar, e a Idempotency-Key é a mesma (RN-22).
+          mutations: { retry: false, networkMode: 'always' },
         },
       }),
   );
   return (
     <QueryClientProvider client={queryClient}>
+      <AvisoOffline />
       {children}
       {/* Toast só para confirmação de ação; erro de regra vai para a folha ou para o campo. */}
       <Toaster

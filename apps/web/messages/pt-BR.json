@@ -39,7 +39,10 @@
       "en": "English"
     },
     "assinatura": "Agendamento por Pontual",
-    "fusoDoEstabelecimento": "Fuso: {fuso}"
+    "fusoDoEstabelecimento": "Fuso: {fuso}",
+    "offline": "Sem conexão. O que está na tela pode estar desatualizado, e as ações que gravam ficam bloqueadas até a rede voltar.",
+    "carregandoOffline": "Sem conexão. Os dados aparecem assim que a rede voltar.",
+    "acaoOffline": "Sem conexão: tente quando a rede voltar."
   },
   "conta": {
     "entrar": "Entrar",
@@ -116,7 +119,10 @@
     "sucessoPendente": "Pedido enviado. O estabelecimento vai confirmar.",
     "sucessoRemarcar": "Agendamento remarcado",
     "sucessoDescricao": "{data}, {hora}, {servico}",
-    "verMeus": "Ver meus agendamentos"
+    "verMeus": "Ver meus agendamentos",
+    "anuncioPasso": "Passo {atual} de {total}: {titulo}",
+    "complementoHorario": "{data}, com {profissional}",
+    "complementoHorarioQualquer": "{data}, com qualquer profissional"
   },
   "bloco": {
     "titulo": "Tempo reservado",
@@ -488,7 +494,7 @@
       "liberado": "Liberado",
       "desbloquear": "Desbloquear",
       "vazio": "Nenhum cliente ainda.",
-      "linha2": "{ativos} ativos, {faltas} faltas",
+      "linha2": "{ativos, plural, =0 {nenhum ativo} one {# ativo} other {# ativos}}, {faltas, plural, =0 {nenhuma falta} one {# falta} other {# faltas}}",
       "dialogo": {
         "titulo": "Desbloquear {nome}?",
         "descricao": "As faltas anteriores a hoje deixam de contar e {nome} volta a agendar pela internet.",

@@ -61,7 +61,9 @@ test('2. o cliente remarca e o horário antigo volta a ficar livre', async ({ pa
   // Serviço e profissional travados: abre direto no passo de dia e horário, no mesmo dia.
   await expect(page.getByText('Com Rafael Moura')).toBeVisible();
   await page.locator(`[data-data="${data}"]`).click();
-  const novo = page.getByRole('radiogroup').last().getByRole('radio').nth(1);
+  // Qualquer horário livre do dia (o antigo já está ocupado e não aparece). Não depende de quantos
+  // horários caem em cada grupo (manhã, tarde, noite), que muda com a hora em que o teste roda.
+  const novo = page.locator('[role="radio"][data-inicio]').first();
   const novoInicio = (await novo.getAttribute('data-inicio'))!;
   expect(novoInicio).not.toBe(antigo.inicio);
   await novo.click();

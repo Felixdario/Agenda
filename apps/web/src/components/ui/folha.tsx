@@ -3,7 +3,7 @@
 import { Dialog } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import type { ReactNode } from 'react';
+import { type ReactNode, useRef } from 'react';
 import { cn } from '@/lib/cn';
 
 /**
@@ -32,11 +32,15 @@ export function Folha({
   largura?: 'md' | 'lg';
 }) {
   const t = useTranslations('comum');
+  // Ao abrir, o foco vai para o título (o leitor de tela anuncia onde está); ao fechar, o base-ui
+  // devolve o foco ao elemento que abriu a folha.
+  const titulo_ = useRef<HTMLHeadingElement>(null);
   return (
     <Dialog.Root open={aberta} onOpenChange={(v) => aoMudar(v)}>
       <Dialog.Portal>
         <Dialog.Backdrop className="veu fixed inset-0 z-40 bg-[var(--scrim)]" />
         <Dialog.Popup
+          initialFocus={titulo_}
           className={cn(
             'folha fixed z-50 flex flex-col bg-surface text-text shadow-float outline-none',
             'inset-x-0 bottom-0 max-h-[92dvh] rounded-t-[20px]',
@@ -47,7 +51,13 @@ export function Folha({
           <div className="flex items-start gap-3 px-4 pt-4 pb-3 md:px-6 md:pt-6">
             <div className="min-w-0 flex-1">
               {cabecalho}
-              <Dialog.Title className="texto-20 font-semibold">{titulo}</Dialog.Title>
+              <Dialog.Title
+                ref={titulo_}
+                tabIndex={-1}
+                className="texto-20 line-clamp-2 font-semibold [overflow-wrap:anywhere] focus:outline-none"
+              >
+                {titulo}
+              </Dialog.Title>
               {descricao === undefined ? null : (
                 <Dialog.Description className="texto-14 mt-1 text-muted">
                   {descricao}
@@ -56,7 +66,7 @@ export function Folha({
             </div>
             <Dialog.Close
               aria-label={t('fechar')}
-              className="pressionavel -mt-1 -mr-1 inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted hover:bg-raised hover:text-text"
+              className="pressionavel -mt-2 -mr-2 inline-flex size-12 shrink-0 items-center justify-center rounded-full text-muted hover:bg-raised hover:text-text"
             >
               <X aria-hidden className="size-5" />
             </Dialog.Close>

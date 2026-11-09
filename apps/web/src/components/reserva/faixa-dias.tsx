@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
-import { type KeyboardEvent, useRef } from 'react';
+import { type KeyboardEvent, useEffect, useRef } from 'react';
 import { cn } from '@/lib/cn';
 import { proximoIndice } from '@/lib/horarios';
 import { formatarDataLocalLonga, rotuloDoDia } from '@/lib/tempo';
@@ -32,6 +32,12 @@ export function FaixaDias({
     0,
     dias.findIndex((d) => d.data === escolhido),
   );
+
+  // O dia escolhido sempre à vista na faixa (ex.: o primeiro dia com vaga é o 10º). Sem animação:
+  // troca de dia não anima.
+  useEffect(() => {
+    botoes.current[indiceEscolhido]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [indiceEscolhido]);
 
   const aoTeclar = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
     const tecla = e.key === 'ArrowUp' || e.key === 'ArrowDown' ? '' : e.key;

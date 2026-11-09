@@ -39,7 +39,10 @@
       "en": "English"
     },
     "assinatura": "Booking by Pontual",
-    "fusoDoEstabelecimento": "Time zone: {fuso}"
+    "fusoDoEstabelecimento": "Time zone: {fuso}",
+    "offline": "You are offline. What is on screen may be out of date, and actions that save are paused until the connection returns.",
+    "carregandoOffline": "You are offline. The data will load as soon as the connection returns.",
+    "acaoOffline": "No connection: try again when you are back online."
   },
   "conta": {
     "entrar": "Sign in",
@@ -116,7 +119,10 @@
     "sucessoPendente": "Request sent. The business will confirm it.",
     "sucessoRemarcar": "Booking rescheduled",
     "sucessoDescricao": "{data}, {hora}, {servico}",
-    "verMeus": "See my bookings"
+    "verMeus": "See my bookings",
+    "anuncioPasso": "Step {atual} of {total}: {titulo}",
+    "complementoHorario": "{data}, with {profissional}",
+    "complementoHorarioQualquer": "{data}, with any staff member"
   },
   "bloco": {
     "titulo": "Reserved time",
@@ -488,7 +494,7 @@
       "liberado": "Allowed",
       "desbloquear": "Unblock",
       "vazio": "No clients yet.",
-      "linha2": "{ativos} active, {faltas} no-shows",
+      "linha2": "{ativos, plural, =0 {none active} one {# active} other {# active}}, {faltas, plural, =0 {no no-shows} one {# no-show} other {# no-shows}}",
       "dialogo": {
         "titulo": "Unblock {nome}?",
         "descricao": "No-shows before today stop counting and {nome} can book online again.",

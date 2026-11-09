@@ -333,3 +333,44 @@ Escolhas desta fase (propostas ao Planejador):
   :3334 e `next build && next start` em :3100 com `distDir` `.next-e2e`. Testes em série, cada um
   com clientes novos (o limite de 3 ativos do RN-17). No CI, um passo roda o `test:e2e` depois do
   seed.
+
+## D-18 — Polimento (fase 6) (2026-11-09)
+Pedidas pelo Planejador no brief da fase 6 (.dupla/fase-6-polimento.md); relatórios em
+`.dupla/fase-6-break-ui.md`, `.dupla/fase-6-animacoes.md` e `.dupla/fase-6-auditoria.md`.
+1. **Pior caso em duas camadas.**
+   - Fixtures em `apps/web/src/dev/pior-caso/` e a página `/dev/pior-caso`, que renderiza as telas
+     reais trocando só o `fetch` de `/api/...`. Cenários: demo (API real), pior, sem vaga e vazio,
+     mais o modo offline. Em produção a página chama `notFound()` antes do `import()` dinâmico, que
+     vira código morto: as fixtures não entram em bundle nenhum.
+   - No banco, `db:seed:pior-caso` (idempotente, só a primeira quarta-feira depois de 15 dias): o
+     almoço vira horário extra e a grade é lotada pelo caso de uso `agendar` (40 + 40 + 38
+     atendimentos de 15 min) com clientes de nome difícil. O e2e roda o script depois do seed.
+2. **Offline.**
+   - Um aviso fixo no topo de toda tela.
+   - As consultas pausam (modo `online` do TanStack) e o cache continua na tela; voltar a rede
+     revalida tudo (`refetchOnReconnect: 'always'`).
+   - Mutações em `networkMode: 'always'`: sem rede, falham na hora com REDE em vez de ficar na fila
+     e disparar sozinhas ao reconectar. Os botões que gravam (`exigeRede`) ficam desabilitados
+     offline.
+   - Reenviar depois de uma falha de rede usa a mesma Idempotency-Key (e2e confere os dois headers
+     e que só há um agendamento).
+3. **Acessibilidade (WCAG 2.2 AA).**
+   - `@axe-core/playwright` em `e2e/a11y.spec.ts`: 13 telas, claro e escuro, zero serious/critical.
+   - E2E de teclado: do serviço à confirmação, com o foco no título ao abrir a folha e de volta no
+     gatilho ao fechar.
+   - Troca de passo anunciada numa live region; a recusa tem `role="alert"`.
+   - O nome acessível começa pelo texto visível (2.5.3); o complemento (dia, profissional, status)
+     vai em `sr-only`.
+   - Hachura com 3,5:1 (claro) e 4,6:1 (escuro); pontos de série com 4,8:1 ou mais.
+   - Alvos: 48 px no fluxo do cliente; no painel, 24 px ou mais (a grade passou a 1,76 px por
+     minuto, e o cartão de 15 min tem 24,4 px).
+4. **Movimento** (review-animations): saídas mais curtas que entradas, nada de `width` ou
+   `box-shadow` animados, a pílula perdida só encolhe (sem perder contraste) e o reduced-motion vale
+   também para o retorno de toque.
+5. **`Botao` é componente de cliente** (lê o estado da rede); o estilo (`estiloBotao`) foi para
+   `components/ui/botao-estilo.ts`, importável por páginas de servidor.
+6. **DESIGN.md reescrito** a partir da interface (`impeccable document`, refresh aprovado na D-16):
+   front-matter com os tokens, as oito seções canônicas e o sidecar
+   `apps/web/.impeccable/design.json` (movimento, sombra, breakpoints e componentes).
+7. **Exceção do detector:** a hachura (`repeating-linear-gradient`) gera um aviso consultivo de
+   "listras decorativas". Fica, porque é o padrão do bloco ocupado e carrega significado.

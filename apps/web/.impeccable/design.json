@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-09T15:00:00.000Z",
+  "title": "Design System: Pontual",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "Cobalto de agenda", "canonical": "#2453d6", "tonalRamp": ["#0d1f52", "#142f7d", "#1c41a9", "#2453d6", "#5a7fe3", "#8fa8ec", "#c3d1f6", "#e9efff"] },
+      "primary": { "role": "primary", "displayName": "Tinta de balcão", "canonical": "#15181d", "tonalRamp": ["#0b0d10", "#15181d", "#2a2f37", "#454b55", "#6b7280", "#9aa0aa", "#cfd4dc", "#f1f3f6"] },
+      "ground": { "role": "neutral", "displayName": "Fundo de sala", "canonical": "#f7f8fa", "tonalRamp": ["#1f2226", "#3a3f46", "#5b6270", "#8a91a0", "#cfd4dc", "#e6e8ec", "#f1f3f6", "#f7f8fa"] },
+      "surface": { "role": "neutral", "displayName": "Papel", "canonical": "#ffffff" },
+      "hatch-line": { "role": "neutral", "displayName": "Linha da hachura", "canonical": "#7f8898" },
+      "positive": { "role": "semantic", "displayName": "Confirmado", "canonical": "#1f7a4d" },
+      "warning": { "role": "semantic", "displayName": "Pendente e aviso", "canonical": "#8a4b0a" },
+      "negative": { "role": "semantic", "displayName": "Falta e perigo", "canonical": "#b4232b" },
+      "serie-1": { "role": "data", "displayName": "Série 1 (cobalto)", "canonical": "#2453d6" },
+      "serie-2": { "role": "data", "displayName": "Série 2 (laranja queimado)", "canonical": "#c2410c" },
+      "serie-3": { "role": "data", "displayName": "Série 3 (verde-petróleo)", "canonical": "#0f766e" },
+      "serie-4": { "role": "data", "displayName": "Série 4 (magenta)", "canonical": "#a21caf" }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Título", "purpose": "Título da página; o único 700 da tela." },
+      "headline": { "displayName": "Título de folha", "purpose": "Folha, diálogo e nome no detalhe." },
+      "body-lg": { "displayName": "Corpo do cliente", "purpose": "Fluxo de reserva, nomes de serviço e preços." },
+      "body": { "displayName": "Corpo do painel", "purpose": "Células, navegação e descrições." },
+      "label": { "displayName": "Rótulo", "purpose": "Meta, hora no cartão da agenda e status; nunca abaixo de 12 px." }
+    },
+    "shadows": [
+      { "name": "flutuante", "value": "0 8px 24px rgb(0 0 0 / 0.08)", "purpose": "Folha, diálogo, menu, seletor e toast. No escuro, alfa 0.45." }
+    ],
+    "motion": [
+      { "name": "ease-folha", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "Entrada da folha (240 ms) e troca de passo (180 ms, 8 px)." },
+      { "name": "ease-out", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Diálogo (200 ms), menus (160 ms), retorno de toque (140 ms) e a recusa 409." },
+      { "name": "saida", "value": "180ms / 150ms", "purpose": "Fechar é resposta do sistema: folha 180 ms, diálogo 150 ms." },
+      { "name": "recusa-stagger", "value": "30ms", "purpose": "As próximas pílulas da recusa entram a cada 30 ms; a perdida só encolhe." },
+      { "name": "reduced-motion", "value": "opacity 120ms", "purpose": "Com prefers-reduced-motion, tudo vira fade de no máximo 120 ms." }
+    ],
+    "breakpoints": [
+      { "name": "pilulas-4-colunas", "value": "400px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "folha-lateral", "value": "768px" },
+      { "name": "barra-lateral", "value": "1024px" },
+      { "name": "detalhe-ao-lado", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botão primário",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ação principal da folha ou da tela; quase preto, pílula.",
+      "html": "<button class=\"ds-btn-primary\">Confirmar agendamento</button>",
+      "css": ".ds-btn-primary { background: var(--primary, #15181d); color: var(--on-primary, #fff); height: 48px; padding: 0 24px; border: 0; border-radius: 999px; font: 600 16px/24px 'Hanken Grotesk', system-ui, sans-serif; transition: transform 140ms cubic-bezier(0.23,1,0.32,1), opacity 140ms ease; } .ds-btn-primary:hover { opacity: .9; } .ds-btn-primary:active { transform: scale(.97); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent, #2453d6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Botão secundário",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ação de apoio, com contorno.",
+      "html": "<button class=\"ds-btn-secondary\">Remarcar</button>",
+      "css": ".ds-btn-secondary { background: var(--surface, #fff); color: var(--text, #111418); height: 40px; padding: 0 16px; border: 1px solid var(--control, #cfd4dc); border-radius: 999px; font: 600 14px/20px 'Hanken Grotesk', system-ui, sans-serif; transition: border-color 140ms ease, transform 140ms cubic-bezier(0.23,1,0.32,1); } .ds-btn-secondary:hover { border-color: var(--muted, #5b6270); } .ds-btn-secondary:active { transform: scale(.97); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--accent, #2453d6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Pílula de horário",
+      "kind": "chip",
+      "refersTo": "slot-pill",
+      "description": "Horário livre; a escolhida usa o acento.",
+      "html": "<div class=\"ds-slots\"><button class=\"ds-slot\">09:45</button><button class=\"ds-slot ds-slot-on\" aria-checked=\"true\">10:00</button><button class=\"ds-slot\">10:15</button></div>",
+      "css": ".ds-slots { display: grid; grid-template-columns: repeat(3, 96px); gap: 8px; } .ds-slot { height: 48px; border: 1px solid var(--control, #cfd4dc); border-radius: 999px; background: var(--surface, #fff); color: var(--text, #111418); font: 600 16px/24px 'Hanken Grotesk', system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-slot:hover { border-color: var(--muted, #5b6270); } .ds-slot-on { background: var(--accent-soft, #e9efff); border-color: var(--accent, #2453d6); color: var(--accent, #2453d6); } .ds-slot:focus-visible { outline: 2px solid var(--accent, #2453d6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Bloco ocupado",
+      "kind": "custom",
+      "refersTo": "bloco-ocupado",
+      "description": "Preparo, atendimento e limpeza como uma barra só, com as horas nas pontas.",
+      "html": "<div class=\"ds-bloco\"><div class=\"ds-bloco-barra\"><span class=\"ds-hachura\" style=\"flex-grow:5\"></span><span class=\"ds-atend\" style=\"flex-grow:30\">09:45–10:15</span><span class=\"ds-hachura\" style=\"flex-grow:5\"></span></div><div class=\"ds-bloco-pontas\"><span>09:40</span><span>10:20</span></div></div>",
+      "css": ".ds-bloco { width: 320px; font: 500 12px/16px 'Hanken Grotesk', system-ui, sans-serif; font-variant-numeric: tabular-nums; } .ds-bloco-barra { display: flex; gap: 2px; height: 32px; border-radius: 999px; overflow: hidden; } .ds-bloco-barra > span { flex-basis: 0; display: flex; align-items: center; justify-content: center; min-width: 24px; } .ds-hachura { background-color: var(--hatch, #e7eaf0); background-image: repeating-linear-gradient(135deg, transparent 0 4px, var(--hatch-line, #7f8898) 4px 5px); } .ds-atend { background: var(--accent, #2453d6); color: var(--surface, #fff); min-width: 64px; } .ds-bloco-pontas { display: flex; justify-content: space-between; margin-top: 6px; color: var(--muted, #5b6270); }"
+    },
+    {
+      "name": "Pílula de status",
+      "kind": "chip",
+      "refersTo": "status-confirmed",
+      "description": "Status com rótulo e marca de forma, nunca só cor.",
+      "html": "<span class=\"ds-status ds-ok\"><i class=\"ds-cheio\"></i>Confirmado</span> <span class=\"ds-status ds-pend\"><i class=\"ds-vazado\"></i>Pendente</span>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; font: 500 12px/16px 'Hanken Grotesk', system-ui, sans-serif; } .ds-ok { background: var(--positive-bg, #e3f6eb); color: var(--positive, #1f7a4d); } .ds-pend { background: var(--warning-bg, #fff6e0); color: var(--warning, #8a4b0a); } .ds-cheio, .ds-vazado { width: 8px; height: 8px; border-radius: 999px; } .ds-cheio { background: currentColor; } .ds-vazado { border: 1.5px solid currentColor; }"
+    },
+    {
+      "name": "Campo",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Rótulo acima, borda de controle, foco cobalto.",
+      "html": "<label class=\"ds-rotulo\">E-mail<input class=\"ds-campo\" placeholder=\"voce@exemplo.com\"></label>",
+      "css": ".ds-rotulo { display: grid; gap: 8px; font: 500 14px/20px 'Hanken Grotesk', system-ui, sans-serif; color: var(--text, #111418); width: 280px; } .ds-campo { height: 40px; padding: 0 12px; border: 1px solid var(--control, #cfd4dc); border-radius: 12px; background: var(--surface, #fff); font: 400 14px/20px 'Hanken Grotesk', system-ui, sans-serif; color: var(--text, #111418); } .ds-campo::placeholder { color: var(--faint, #6b7280); } .ds-campo:hover { border-color: var(--muted, #5b6270); } .ds-campo:focus-visible { border-color: var(--accent, #2453d6); outline: 2px solid var(--accent, #2453d6); outline-offset: 0; }"
+    },
+    {
+      "name": "Navegação do painel",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Barra lateral na cor do fundo; o ativo é uma pílula cinza.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-item ds-nav-on\">Agenda</a><a class=\"ds-nav-item\">Encaixe</a><a class=\"ds-nav-item\">Serviços</a></nav>",
+      "css": ".ds-nav { display: grid; gap: 2px; width: 216px; padding: 8px; background: var(--ground, #f7f8fa); } .ds-nav-item { height: 40px; display: flex; align-items: center; padding: 0 12px; border-radius: 10px; color: var(--muted, #5b6270); font: 400 14px/20px 'Hanken Grotesk', system-ui, sans-serif; text-decoration: none; } .ds-nav-item:hover { background: var(--raised, #f1f3f6); color: var(--text, #111418); } .ds-nav-on { background: var(--raised, #f1f3f6); color: var(--text, #111418); font-weight: 500; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "O balcão bem organizado",
+    "overview": "O Pontual parece com o que o cliente já conhece de agendamento online, e de propósito. A distinção mora em três lugares, e só neles: o bloco ocupado, a recusa com saída e os números no lugar. O resto é contido: fundo neutro, tinta quase preta e um único acento cobalto.",
+    "keyCharacteristics": [
+      "Claro por padrão; o escuro acompanha o sistema e é um tema completo, com os mesmos papéis.",
+      "Um acento só, cobalto, para o horário escolhido, o foco e o dado principal.",
+      "Superfícies com borda de 1 px em repouso; sombra só no que flutua.",
+      "Pílulas para horários, chips, botões e status; cartões e folhas com cantos suaves.",
+      "Status sempre com texto e com uma marca de forma, nunca só com cor.",
+      "Toda data e hora no fuso do estabelecimento, em pt-BR ou inglês."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "O cobalto é o único acento. Ele marca o que o usuário escolheu, onde está o foco e o dado principal; nunca a casca, nunca um botão inteiro.", "section": "colors" },
+      { "name": "The Never-Only-Color Rule", "body": "Status tem rótulo e forma: confirmado é um círculo cheio, pendente é um círculo vazado, cancelado é texto riscado, concluído e falta têm rótulo próprio.", "section": "colors" },
+      { "name": "The Sentence Case Rule", "body": "Tudo em caixa de frase. Não há rótulo em caixa alta espaçada nem \"eyebrow\" acima de título.", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "Toda hora, duração, valor e contagem leva .num (tabular-nums) e, em tabela, alinha à direita.", "section": "typography" },
+      { "name": "The Border-Or-Shadow Rule", "body": "Uma superfície tem borda ou sombra, nunca as duas.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do usar o cobalto só no escolhido, no foco e no dado principal (One Voice Rule).",
+      "Do mostrar status com texto e forma (Never-Only-Color Rule).",
+      "Do formatar data e hora com o fuso do estabelecimento, nunca o do navegador.",
+      "Do levar toda recusa de regra para o lugar onde ela aconteceu, como mensagem e ação; toast só confirma uma ação que deu certo.",
+      "Do manter 48 px de alvo no fluxo do cliente e pelo menos 24 px no painel.",
+      "Do deixar o dado de usuário quebrar (overflow-wrap) em vez de vazar, e truncar só o que tem o valor completo à vista em outro lugar (rótulo, dica, detalhe)."
+    ],
+    "donts": [
+      "Don't usar violeta, índigo, gradiente decorativo, vidro, brilho ou ícone dentro de círculo colorido. A hachura do bloco ocupado é a única textura, e ela carrega significado.",
+      "Don't usar sombra em superfície em repouso, nem borda e sombra juntas.",
+      "Don't colocar rótulo em caixa alta espaçada ou \"eyebrow\" acima de título.",
+      "Don't pôr texto na interface fora dos dicionários (apps/web/messages).",
+      "Don't animar troca de dia, filtro ou ação de teclado; movimento só na folha, no passo do fluxo, na recusa e no retorno de toque."
+    ]
+  }
+}

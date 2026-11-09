@@ -57,7 +57,7 @@ export function PaginaMeusAgendamentos() {
         <Tabs.List className="relative flex gap-6 border-b border-border">
           {aba_('futuros', t('abas.proximos'))}
           {aba_('passados', t('abas.anteriores'))}
-          <Tabs.Indicator className="absolute bottom-[-1px] left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-text transition-[translate,width] duration-200 ease-out motion-reduce:transition-none" />
+          <Tabs.Indicator className="absolute bottom-[-1px] left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-text" />
         </Tabs.List>
         <Tabs.Panel value="futuros" className="pt-5 outline-none">
           <ListaDeAgendamentos consulta={futuros} estabs={porSlug} proximos />
@@ -239,7 +239,7 @@ function CartaoAgendamento({
               >
                 {t('remarcar')}
               </Botao>
-              <Botao variante="perigo" tamanho="lg" onClick={aoCancelar}>
+              <Botao variante="perigo" tamanho="lg" onClick={aoCancelar} exigeRede>
                 {t('cancelar')}
               </Botao>
             </div>
@@ -295,6 +295,7 @@ function DialogoCancelar({ ag, aoFechar }: { ag: AgendamentoLista | null; aoFech
             tamanho="lg"
             carregando={mudar.isPending}
             data-testid="confirmar-cancelamento"
+            exigeRede
             onClick={() => {
               if (ag === null) return;
               mudar.mutate(

@@ -34,7 +34,7 @@ export function SeletorIdioma({ className }: { className?: string }) {
       disabled={pendente}
     >
       <Select.Trigger
-        aria-label={t('idioma')}
+        aria-label={`${t('idioma')}: ${t(`idiomas.${locale as Locale}`)}`}
         data-testid="seletor-idioma"
         className={cn(
           'pressionavel texto-14 inline-flex h-10 items-center gap-2 rounded-full border border-control bg-surface px-3 text-text hover:border-muted',

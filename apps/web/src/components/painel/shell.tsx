@@ -108,10 +108,7 @@ function Usuario({ eu }: { eu: Eu }) {
   const u = eu.usuario;
   return (
     <Menu.Root>
-      <Menu.Trigger
-        aria-label={t('conta.menu')}
-        className="pressionavel flex w-full items-center gap-2.5 rounded-[10px] p-2 text-left hover:bg-raised data-popup-open:bg-raised"
-      >
+      <Menu.Trigger className="pressionavel flex w-full items-center gap-2.5 rounded-[10px] p-2 text-left hover:bg-raised data-popup-open:bg-raised">
         <Iniciais nome={u.nome} tamanho="sm" />
         <span className="flex min-w-0 flex-col">
           <span className="texto-14 truncate font-medium">{u.nome}</span>

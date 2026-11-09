@@ -133,6 +133,7 @@ export default function Page() {
               type="submit"
               variante="primario"
               carregando={salvar.isPending}
+              exigeRede
               disabled={!form.formState.isDirty}
             >
               {salvar.isPending ? tc('salvando') : t('salvar')}

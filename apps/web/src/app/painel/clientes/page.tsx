@@ -1,7 +1,7 @@
 'use client';
 
 import type { ClientePainel } from '@agenda/shared';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { ErroDeRegra } from '@/components/comum/erro-de-regra';
@@ -15,6 +15,7 @@ import { ehErroApi } from '@/lib/erros';
 export default function Page() {
   const t = useTranslations('painel.clientes');
   const clientes = useClientesPainel();
+  const numero = new Intl.NumberFormat(useLocale());
   const [desbloquear, setDesbloquear] = useState<ClientePainel | null>(null);
   const lista = [...(clientes.data ?? [])].sort(
     (a, b) =>
@@ -79,10 +80,12 @@ export default function Page() {
                 {lista.map((c) => (
                   <tr key={c.id} className="texto-14 border-b border-rule last:border-0">
                     <td className="h-12 px-5 font-medium">{c.nome}</td>
-                    <td className="max-w-[280px] truncate px-3 text-muted">{c.email}</td>
-                    <td className="num px-3 text-right">{c.ativosFuturos}</td>
+                    <td className="max-w-[280px] truncate px-3 text-muted" title={c.email}>
+                      {c.email}
+                    </td>
+                    <td className="num px-3 text-right">{numero.format(c.ativosFuturos)}</td>
                     <td className={cn('num px-3 text-right', c.faltas > 0 && 'font-medium')}>
-                      {c.faltas}
+                      {numero.format(c.faltas)}
                     </td>
                     <td className="px-3">
                       <Situacao bloqueado={c.bloqueado} />
@@ -101,10 +104,15 @@ export default function Page() {
           </div>
           <ul className="divide-y divide-rule rounded-card border border-border bg-surface md:hidden">
             {lista.map((c) => (
-              <li key={c.id} className="flex items-center gap-3 px-4 py-3">
+              <li key={c.id} className="flex items-start gap-3 px-4 py-3">
                 <div className="flex min-w-0 flex-1 flex-col">
-                  <span className="texto-14 font-medium">{c.nome}</span>
-                  <span className="texto-12 truncate text-muted">{c.email}</span>
+                  <span className="texto-14 flex flex-wrap items-center gap-x-2 gap-y-1 font-medium">
+                    {c.nome}
+                    {c.bloqueado ? <Situacao bloqueado /> : null}
+                  </span>
+                  <span className="texto-12 truncate text-muted" title={c.email}>
+                    {c.email}
+                  </span>
                   <span className="texto-12 num text-muted">
                     {t('linha2', { ativos: c.ativosFuturos, faltas: c.faltas })}
                   </span>
@@ -164,6 +172,7 @@ function DialogoDesbloquear({
           <Botao
             variante="primario"
             carregando={desbloquear.isPending}
+            exigeRede
             onClick={() =>
               cliente !== null &&
               desbloquear.mutate(cliente.id, {

@@ -1,165 +1,378 @@
-# Pontual: sistema visual
+---
+name: Pontual
+description: Agendamento online sem conflito de horário, com a regra visível na tela.
+colors:
+  ground: '#f7f8fa'
+  surface: '#ffffff'
+  raised: '#f1f3f6'
+  border: '#e6e8ec'
+  rule: '#f0f1f4'
+  control: '#cfd4dc'
+  ink: '#111418'
+  muted: '#5b6270'
+  faint: '#6b7280'
+  primary: '#15181d'
+  on-primary: '#ffffff'
+  accent: '#2453d6'
+  accent-soft: '#e9efff'
+  positive: '#1f7a4d'
+  positive-bg: '#e3f6eb'
+  warning: '#8a4b0a'
+  warning-bg: '#fff6e0'
+  warning-line: '#f3d48a'
+  negative: '#b4232b'
+  negative-bg: '#fdecec'
+  hatch: '#e7eaf0'
+  hatch-line: '#7f8898'
+  serie-1: '#2453d6'
+  serie-2: '#c2410c'
+  serie-3: '#0f766e'
+  serie-4: '#a21caf'
+  dark-ground: '#0e0f11'
+  dark-surface: '#16181b'
+  dark-raised: '#1f2226'
+  dark-border: '#26292e'
+  dark-ink: '#f3f4f6'
+  dark-muted: '#b3b8c0'
+  dark-accent: '#7c9cff'
+  dark-accent-soft: '#1a2342'
+  dark-hatch: '#2b2f35'
+  dark-hatch-line: '#7a8290'
+typography:
+  title:
+    fontFamily: 'Hanken Grotesk, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '28px'
+    fontWeight: 700
+    lineHeight: '34px'
+    letterSpacing: '-0.01em'
+  headline:
+    fontFamily: 'Hanken Grotesk, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '20px'
+    fontWeight: 600
+    lineHeight: '28px'
+  body-lg:
+    fontFamily: 'Hanken Grotesk, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '16px'
+    fontWeight: 400
+    lineHeight: '24px'
+  body:
+    fontFamily: 'Hanken Grotesk, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '14px'
+    fontWeight: 400
+    lineHeight: '20px'
+  label:
+    fontFamily: 'Hanken Grotesk, ui-sans-serif, system-ui, sans-serif'
+    fontSize: '12px'
+    fontWeight: 500
+    lineHeight: '16px'
+    fontFeature: 'tnum'
+rounded:
+  pill: '999px'
+  card: '16px'
+  sheet: '20px'
+  field: '12px'
+  block: '10px'
+spacing:
+  xs: '4px'
+  sm: '8px'
+  md: '16px'
+  card: '20px'
+  gutter: '24px'
+components:
+  button-primary:
+    backgroundColor: '{colors.primary}'
+    textColor: '{colors.on-primary}'
+    rounded: '{rounded.pill}'
+    height: '48px'
+    padding: '0 24px'
+  button-secondary:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.pill}'
+    height: '40px'
+    padding: '0 16px'
+  button-danger:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.negative}'
+    rounded: '{rounded.pill}'
+    height: '40px'
+  slot-pill:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.pill}'
+    height: '48px'
+  slot-pill-selected:
+    backgroundColor: '{colors.accent-soft}'
+    textColor: '{colors.accent}'
+    rounded: '{rounded.pill}'
+    height: '48px'
+  day-chip:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.card}'
+    size: '76px'
+  card:
+    backgroundColor: '{colors.surface}'
+    rounded: '{rounded.card}'
+    padding: '20px'
+  field:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.field}'
+    height: '40px'
+  status-confirmed:
+    backgroundColor: '{colors.positive-bg}'
+    textColor: '{colors.positive}'
+    rounded: '{rounded.pill}'
+    height: '24px'
+  status-pending:
+    backgroundColor: '{colors.warning-bg}'
+    textColor: '{colors.warning}'
+    rounded: '{rounded.pill}'
+    height: '24px'
+  agenda-card:
+    backgroundColor: '{colors.surface}'
+    textColor: '{colors.ink}'
+    rounded: '{rounded.block}'
+---
 
-> **Versão 0.** Este documento foi escrito na fase 4, antes de existir interface. Ele é o contrato da
-> construção da fase 5. Na fase 6, o `impeccable document` o reescreve a partir da interface
-> construída, e o que estiver na interface prevalece.
->
+# Design System: Pontual
+
 > **Direção:** o padrão da categoria, escolhido de propósito e executado com capricho, com o Booksy
-> como régua de acabamento. Consulte o `PRODUCT.md` e a decisão D-16.
+> como régua de acabamento (D-16). Este documento foi reescrito na fase 6 a partir da interface
+> construída (`apps/web`), com `impeccable document` em modo refresh. Onde ele e o código divergirem,
+> vale o código, e este arquivo deve ser atualizado. Os tokens do front-matter são os de
+> `apps/web/src/app/globals.css`; o sidecar `apps/web/.impeccable/design.json` traz movimento,
+> sombras e os componentes em HTML/CSS.
 
-## Princípio
+## Overview
 
-O visitante tem que saber onde está tudo antes de notar o estilo. A convenção vale sem ironia.
-O produto se distingue em três lugares, e só neles:
+**Creative North Star: "O balcão bem organizado"**
 
-1. **O bloco ocupado.** Uma barra que mostra preparo, serviço e limpeza como uma coisa só, com início
-   e fim do bloco. Aparece na confirmação, no detalhe do atendimento e no painel. É a regra D-02 se
-   explicando sozinha.
-2. **A recusa com saída.** Quando o horário é tomado (409), a tela não mostra "erro". Ela marca o
-   horário perdido e oferece os próximos horários livres na mesma folha.
-3. **Os números no lugar.** Toda hora, duração e valor usa algarismos tabulares, alinhados na coluna.
-   No painel, a agenda é uma grade densa e escaneável.
+O Pontual parece com o que o cliente já conhece de agendamento online, e de propósito. A página de
+um estabelecimento é uma lista de serviços com preço; escolher um abre uma folha com profissional,
+dia, horário e revisão. O painel é uma ferramenta de agenda: barra lateral clara, colunas por
+profissional e um detalhe à direita. Quem chega sabe onde está tudo antes de notar o estilo.
 
-## Cena
+A distinção mora em três lugares, e só neles: o **bloco ocupado** (preparo, atendimento e limpeza
+como uma barra só, com as horas nas pontas), a **recusa com saída** (o horário perdido riscado e os
+próximos livres na mesma folha) e os **números no lugar** (toda hora, duração e valor alinhados em
+algarismos de largura fixa). O resto é contido: fundo neutro, tinta quase preta e um único acento
+cobalto.
 
-O cliente marca o horário pelo celular, com uma mão, na rua ou no ônibus. O dono e o profissional
-usam a tela do balcão ou o notebook, de dia, com o salão iluminado. Por isso o tema padrão é
-**claro**. O tema escuro acompanha `prefers-color-scheme` e é um tema completo, não só a inversão das
-cores.
+A densidade muda com a cena. O cliente, no celular e com uma mão, faz poucas escolhas grandes
+(alvos de 48 px). O dono, no balcão, lê uma grade densa (alvos de 24 px ou mais, cartão de 15 min
+com 24,4 px de altura).
 
-## Cor
+**Key Characteristics:**
 
-A estratégia é **contida**: um fundo neutro, tinta quase preta e um único acento. O acento aparece no
-horário escolhido, no foco e no dado principal. O botão primário é quase preto. Não há gradiente,
-brilho, vidro, violeta nem índigo.
+- Claro por padrão; o escuro acompanha o sistema e é um tema completo, com os mesmos papéis.
+- Um acento só, cobalto, para o horário escolhido, o foco e o dado principal (o atendimento no
+  bloco ocupado, a linha do agora).
+- Superfícies com borda de 1 px em repouso; sombra só no que flutua.
+- Pílulas para horários, chips, botões e status; cartões e folhas com cantos suaves.
+- Status sempre com texto e com uma marca de forma, nunca só com cor.
+- Toda data e hora no fuso do estabelecimento, em pt-BR ou inglês.
 
-```css
-:root {
-  --ground: #f7f8fa; /* fundo da página */
-  --surface: #ffffff; /* cartões, folhas, tabela */
-  --raised: #f1f3f6; /* hover, linha selecionada sem acento */
-  --border: #e6e8ec; /* borda de cartão */
-  --rule: #f0f1f4; /* fio entre linhas */
-  --control: #cfd4dc; /* borda de controle */
-  --text: #111418;
-  --muted: #5b6270; /* 6.1:1 no branco */
-  --faint: #6b7280; /* placeholder; 4.8:1 */
-  --primary: #15181d; /* botão primário, rótulo branco */
-  --accent: #2453d6; /* cobalto: horário escolhido, foco, dado principal; 6.3:1 no branco */
-  --accent-soft: #e9efff; /* fundo do horário escolhido */
-  --positive: #1f7a4d;
-  --positive-bg: #e3f6eb;
-  --warning: #8a4b0a;
-  --warning-bg: #fff6e0;
-  --warning-line: #f3d48a;
-  --negative: #b4232b;
-  --negative-bg: #fdecec;
-  --hatch: #dfe3ea; /* hachura de preparo/limpeza */
-}
-:root[data-theme='dark'] {
-  --ground: #0e0f11;
-  --surface: #16181b;
-  --raised: #1f2226;
-  --border: #26292e;
-  --rule: #1d2024;
-  --control: #3a3f46;
-  --text: #f3f4f6;
-  --muted: #b3b8c0;
-  --faint: #959ba5;
-  --primary: #f3f4f6; /* invertido: fundo claro, rótulo escuro */
-  --accent: #7c9cff;
-  --accent-soft: #1a2342;
-  --positive: #4cc38a;
-  --positive-bg: #12261b;
-  --warning: #f0b45a;
-  --warning-bg: #2a1f0f;
-  --warning-line: #5c4318;
-  --negative: #f07178;
-  --negative-bg: #2c1618;
-  --hatch: #2b2f35;
-}
-```
+## Colors
 
-O status nunca é indicado só por cor. Cada status tem rótulo em texto e, nas listas, uma marca de
-forma diferente: confirmado é um círculo cheio, pendente é um círculo vazado, cancelado é um texto
-riscado, e concluído e falta têm rótulo próprio.
+Neutros frios, tinta quase preta e um cobalto que aparece pouco, por isso se lê.
 
-**Cores dos profissionais.** Cada profissional tem uma cor de série fixa, usada só em dados (a borda
-da coluna na agenda e o ponto da legenda), nunca na casca. A paleta de série tem no máximo quatro
-matizes: cobalto, `#c2410c`, `#0f766e` e `#a21caf`. Na casca, as cores vêm dos tokens acima.
+### Primary
 
-## Tipo
+- **Cobalto de agenda** (accent): o horário escolhido (fundo `accent-soft` com borda e texto
+  cobalto), o anel de foco, o trecho de atendimento no bloco ocupado, a linha e o selo do "agora" no
+  painel e os links de texto. No escuro vira um cobalto claro (dark-accent) com texto escuro por
+  cima.
+- **Tinta de balcão** (primary): o botão primário, quase preto com rótulo branco. No escuro, é
+  invertido (fundo claro, rótulo escuro). Um primário por folha ou por tela.
 
-- **Uma família: Hanken Grotesk**, carregada com `next/font`, em subset latin, nos pesos 400, 500,
-  600 e 700. Os dígitos da Hanken já são de largura fixa por padrão (medido na fase 5: "1111" e
-  "0000" têm a mesma largura), então o objetivo dos números alinhados está cumprido.
-  `tabular-nums` continua declarado como garantia.
-- **Escala:** 12 / 14 / 16 / 20 / 28.
-  - 28 / 700: título de página. É o único 700 da tela.
-  - 20 / 600: título de folha e de seção.
-  - 16 / 400 e 16 / 600: corpo do fluxo do cliente e preço.
-  - 14 / 400 e 14 / 500: células, navegação, corpo do painel.
-  - 12 / 500: rótulo e meta. Nada fica abaixo de 12.
-- Tudo em caixa de frase. Não há rótulo em caixa alta espaçada nem "eyebrow".
-- Entrelinha de 20 px para texto de 14 e de 24 px para texto de 16. Tracking -0.01em só no 28.
-- `tabular-nums` em todo número de hora, duração, valor e contagem.
+### Neutral
 
-## Forma e espaço
+- **Fundo de sala** (ground): o fundo da página, a barra lateral do painel e as horas fora do
+  expediente na grade.
+- **Papel** (surface): cartões, folhas, diálogos, tabelas e o expediente na grade.
+- **Elevado** (raised): hover, item ativo da navegação, skeleton e o disco das iniciais.
+- **Borda** (border) e **fio** (rule): borda de cartão e divisória entre linhas.
+- **Controle** (control): borda de campo e de botão secundário, um passo mais forte.
+- **Tinta**, **suave** e **apagada** (ink, muted, faint): texto principal, secundário (6,1:1) e
+  placeholder ou dia sem vaga (4,5:1 ou mais).
 
-- **Raio suave**, escolhido uma vez: cartões e folhas com 16, campos com 12, e pílulas com 999 nos
-  horários, chips e botões.
-- **Borda ou sombra, nunca as duas.** Superfícies em repouso têm borda de 1 px. Sombra só no que
-  flutua (menu, popover, sheet, diálogo): `0 8px 24px rgb(0 0 0 / .08)` no tema claro.
-- **Base de espaçamento de 4 px.** Folga de 16 entre cartões, 20 de padding de cartão, 24 de gutter
-  no desktop e 16 no celular. Controles com 40 px de altura no painel e 48 no fluxo do cliente,
-  porque é toque.
-- **Ícones:** um único conjunto, em contorno (Lucide), com 16 a 20 px, cinza. Nunca dentro de círculo
-  colorido.
+### Semânticas
 
-## Componentes
+- **Positivo** (positive / positive-bg): status confirmado e situação "ativo".
+- **Aviso** (warning / warning-bg / warning-line): status pendente, chips de exceção (folga,
+  horário extra, feriado) e o aviso de sem conexão.
+- **Negativo** (negative / negative-bg): falta, cliente bloqueado, botão de perigo e o bloco de erro
+  de regra.
 
-| Componente             | Base                        | Regra                                                                                                                                                                           |
-| ---------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Botão                  | `button` + cva              | primário quase preto, secundário com contorno, perigo com contorno vermelho isolado por espaço; só um primário por folha                                                        |
-| Horário (slot)         | botão do tipo pílula        | fica numa grade de 3 a 4 colunas no celular; o escolhido usa `--accent-soft` com borda `--accent`; rótulo acessível completo: "sábado, 14 de novembro, 10:00, com Rafael Moura" |
-| Serviço                | linha de lista              | nome, duração e preço alinhados à direita em tabular; não vira card com ícone                                                                                                   |
-| Profissional           | linha com iniciais          | iniciais num disco neutro e o nome; opção "Qualquer profissional" no topo                                                                                                       |
-| Seletor de dia         | faixa horizontal de 14 dias | dia sem horário aparece esmaecido e com o motivo ("folga", "lotado", "fora do horizonte")                                                                                       |
-| Bloco ocupado          | barra segmentada            | trecho hachurado para preparo, cheio para o serviço e hachurado para limpeza; horas nas pontas                                                                                  |
-| Recusa 409             | folha (sheet)               | horário perdido riscado e até 5 próximos horários como pílulas, clicáveis direto                                                                                                |
-| Agenda do painel       | grade própria               | colunas por profissional, eixo de horas em tabular, bloqueios com borda tracejada, linha do "agora" no acento                                                                   |
-| Status                 | pílula pálida               | tinta escura do mesmo matiz mais a marca de forma                                                                                                                               |
-| Toast                  | Sonner                      | só para confirmação de ação; erro de regra nunca vai para toast, vai para a folha ou para o campo                                                                               |
-| Diálogo, menu, popover | base-ui                     | foco preso e Esc fecha                                                                                                                                                          |
+### Hachura e séries
 
-## Movimento
+- **Hachura** (hatch / hatch-line): preparo e limpeza. As linhas têm 3,5:1 contra a superfície no
+  claro e 4,6:1 no escuro, porque carregam significado.
+- **Séries** (serie-1 a serie-4): uma cor fixa por profissional, só em dados: o filete no topo da
+  coluna da agenda e o ponto da legenda. Todas passam de 4,8:1 contra o fundo nos dois temas.
 
-O movimento serve à orientação e nunca à decoração. Detalhes ficam para a fase 5 (`emil-design-eng`
-e `animate`).
+### Named Rules
 
-- **Entrada de folha:** 240 ms, `cubic-bezier(.2,.8,.2,1)`.
-- **Troca de passo no fluxo:** 180 ms de deslocamento curto (8 px) com fade.
-- **Horário tomado:** a pílula perdida é riscada e encolhe, e as próximas entram em sequência a cada
-  30 ms.
-- **Ações frequentes:** teclado, filtros e troca de dia no painel não animam.
-- **`prefers-reduced-motion`:** tudo vira troca instantânea com fade de 120 ms no máximo.
+**The One Voice Rule.** O cobalto é o único acento. Ele marca o que o usuário escolheu, onde está o
+foco e o dado principal; nunca a casca, nunca um botão inteiro.
 
-## Estados obrigatórios
+**The Never-Only-Color Rule.** Status tem rótulo e forma: confirmado é um círculo cheio, pendente é
+um círculo vazado, cancelado é texto riscado, concluído e falta têm rótulo próprio.
 
-Toda tela precisa ter estes estados: carregando (skeleton com a forma real), vazio (uma frase e uma
-ação), erro de rede (offline com a última versão em cache e "tentar de novo"), erro de regra (código →
-mensagem → ação) e sucesso.
+## Typography
 
-Casos extremos que a fase 6 testa com `break-ui`:
+**Display Font:** Hanken Grotesk (com ui-sans-serif e system-ui)
+**Body Font:** Hanken Grotesk
 
-- um dia com 40 agendamentos;
-- nome de serviço enorme;
-- um dia sem horário livre;
-- a aplicação offline.
+**Character:** uma grotesca só, de desenho calmo, cujos dígitos já têm largura fixa: as horas e os
+preços se alinham em coluna sem fonte mono.
 
-## Idioma e formatação
+### Hierarchy
 
-- **Idiomas:** pt-BR (padrão) e en.
-- **Datas e horas:** `Intl.DateTimeFormat` no fuso do estabelecimento, nunca no do navegador.
-- **Dinheiro:** `Intl.NumberFormat`, em BRL.
-- **Códigos de erro:** cada `CodigoErro` tem mensagem e ação no dicionário dos dois idiomas.
+- **Title** (700, 28 px, 34 px): título da página. É o único 700 da tela.
+- **Headline** (600, 20 px, 28 px): título de folha, de diálogo e o nome no detalhe do atendimento.
+- **Body large** (400 e 600, 16 px, 24 px): o fluxo do cliente, os nomes de serviço e os preços.
+- **Body** (400 e 500, 14 px, 20 px): o painel, as células, a navegação e as descrições.
+- **Label** (500, 12 px, 16 px): rótulos, meta, hora dentro do cartão da agenda e pílulas de status.
+  Nada fica abaixo de 12 px.
+
+### Named Rules
+
+**The Sentence Case Rule.** Tudo em caixa de frase. Não há rótulo em caixa alta espaçada nem
+"eyebrow" acima de título.
+
+**The Tabular Rule.** Toda hora, duração, valor e contagem leva `.num` (`tabular-nums`) e, em
+tabela, alinha à direita.
+
+## Layout
+
+- **Cliente:** coluna única de até 720 px, centrada, com 16 px de margem. A folha do fluxo sobe de
+  baixo no celular (até 92% da altura) e entra pela direita no desktop (480 px de largura).
+- **Painel:** barra lateral de 232 px na cor do fundo, com o produto, o estabelecimento, a navegação,
+  o idioma e a pessoa. Abaixo de 1024 px vira um topo de 56 px com o menu numa folha. Conteúdo com
+  24 px de margem no desktop e 16 px no celular.
+- **Agenda:** grade própria com eixo de horas de 56 px e uma coluna por profissional (no mínimo
+  176 px), 1,76 px por minuto. A grade rola dentro da própria moldura, com o cabeçalho e o eixo
+  fixos. A partir de 1280 px, o detalhe do atendimento fica numa coluna de 360 px à direita; abaixo
+  disso, numa folha.
+- **Ritmo:** base de 4 px. Folga de 16 px entre cartões, 20 px de padding de cartão, 24 px entre
+  seções.
+
+## Elevation & Depth
+
+Plano em repouso: cartões, tabelas e campos têm borda de 1 px e nenhuma sombra. A sombra existe só
+no que flutua sobre a página.
+
+### Shadow Vocabulary
+
+- **Flutuante** (`box-shadow: 0 8px 24px rgb(0 0 0 / 0.08)`; no escuro, alfa 0.45): folha, diálogo,
+  menu, seletor e toast.
+
+### Named Rules
+
+**The Border-Or-Shadow Rule.** Uma superfície tem borda ou sombra, nunca as duas.
+
+## Shapes
+
+- **Pílula** (999 px): botões, horários, chips de exceção e pílulas de status.
+- **Cartão** (16 px): cartões, tabelas, faixa de dias e diálogos no desktop.
+- **Folha** (20 px): cantos de cima da folha no celular e da esquerda no desktop.
+- **Campo** (12 px): campos de texto, seleções e menus.
+- **Bloco** (10 px): cartões de atendimento e bloqueios dentro da grade.
+- Bloqueio é tracejado; atendimento tem borda sólida; o bloco ocupado tem os trechos de preparo e
+  limpeza hachurados a 135°.
+
+## Components
+
+### Buttons
+
+- **Shape:** pílula (999 px), com retorno de toque (escala 0,97 por 140 ms).
+- **Primary:** tinta de balcão com rótulo branco, 48 px no fluxo do cliente e 40 px no painel.
+- **Secondary:** papel com borda de controle; a borda escurece no hover.
+- **Danger:** papel com contorno e texto negativos, isolado no fim do bloco.
+- **Ação que grava:** fica desabilitada sem rede, com o motivo como dica.
+
+### Horários e dias (assinatura do fluxo)
+
+- **Pílula de horário:** 48 px, em grade de 3 colunas (4 a partir de 400 px), agrupada em manhã,
+  tarde e noite. A escolhida tem fundo `accent-soft` e borda cobalto. Funciona só com teclado (um
+  ponto de tabulação e setas) e o nome acessível começa pelo texto visível e completa com dia e
+  profissional.
+- **Faixa de dias:** 14 chips de 76 px; dia sem vaga fica no fundo, apagado, com "Sem horários". O
+  dia escolhido sempre fica à vista.
+
+### Bloco ocupado (assinatura)
+
+Barra de 32 px em pílula: preparo hachurado, atendimento cheio em cobalto com o intervalo escrito,
+limpeza hachurada. As horas do início e do fim do bloco ficam nas pontas, e a legenda lista só os
+trechos que existem. Aparece na revisão, no detalhe do atendimento e, na grade, como faixas
+hachuradas em cima e embaixo do cartão.
+
+### Recusa 409 (assinatura)
+
+Na mesma folha: título que diz o que aconteceu, o horário perdido riscado em borda tracejada (só
+encolhe, continua legível) e até 5 pílulas cobalto dos próximos horários, que confirmam direto. Se a
+pílula é de outro dia, a data curta vai em cima da hora.
+
+### Cards / Containers
+
+- **Corner Style:** 16 px.
+- **Background:** papel sobre o fundo.
+- **Shadow Strategy:** nenhuma (ver Elevation & Depth).
+- **Border:** 1 px de borda; divisórias internas no fio.
+- **Internal Padding:** 20 px (16 px em listas no celular).
+
+### Inputs / Fields
+
+- **Style:** papel, borda de controle, 12 px de raio, 40 px de altura (48 px nos formulários do
+  cliente). Rótulo acima, dica ou erro abaixo.
+- **Focus:** borda e anel de 2 px cobalto.
+- **Error:** borda negativa e mensagem em negativo com a saída.
+
+### Status
+
+Pílula pálida de 24 px: tinta do matiz sobre o fundo do mesmo matiz, com a marca de forma e o
+rótulo. Cancelado é riscado.
+
+### Navigation
+
+Barra lateral na cor do fundo, itens de 40 px com ícone de contorno de 16 px. O ativo é uma pílula
+cinza (raised) com o texto em tinta; os outros ficam em suave. O profissional vê só Agenda, Encaixe
+e Minha jornada.
+
+### Agenda do painel (assinatura)
+
+Colunas por profissional com um filete de 2 px da cor de série no topo, o nome e o resumo do dia, e
+os chips de exceção removíveis. O expediente é papel; fora dele, fundo. O cartão de atendimento
+mostra hora e cliente (e serviço e status quando cabem), com o bloco hachurado; o selecionado ganha
+borda cobalto. O bloqueio é tracejado. A linha do agora é cobalto, com a hora num selo no eixo.
+
+### Aviso de sem conexão
+
+Faixa de aviso fixa no topo, em warning-bg, que diz que a tela pode estar desatualizada e que as
+ações que gravam ficam bloqueadas até a rede voltar.
+
+## Do's and Don'ts
+
+### Do:
+
+- **Do** usar o cobalto só no escolhido, no foco e no dado principal (One Voice Rule).
+- **Do** mostrar status com texto e forma (Never-Only-Color Rule).
+- **Do** formatar data e hora com o fuso do estabelecimento, nunca o do navegador.
+- **Do** levar toda recusa de regra para o lugar onde ela aconteceu, como mensagem e ação; toast só
+  confirma uma ação que deu certo.
+- **Do** manter 48 px de alvo no fluxo do cliente e pelo menos 24 px no painel.
+- **Do** deixar o dado de usuário quebrar (`overflow-wrap`) em vez de vazar, e truncar só o que tem o
+  valor completo à vista em outro lugar (rótulo, dica, detalhe).
+
+### Don't:
+
+- **Don't** usar violeta, índigo, gradiente decorativo, vidro, brilho ou ícone dentro de círculo
+  colorido. A hachura do bloco ocupado é a única textura, e ela carrega significado.
+- **Don't** usar sombra em superfície em repouso, nem borda e sombra juntas.
+- **Don't** colocar rótulo em caixa alta espaçada ou "eyebrow" acima de título.
+- **Don't** pôr texto na interface fora dos dicionários (`apps/web/messages`).
+- **Don't** animar troca de dia, filtro ou ação de teclado; movimento só na folha, no passo do
+  fluxo, na recusa e no retorno de toque.

@@ -30,4 +30,6 @@ const executar = (comando) =>
   execSync(comando, { cwd: raiz, stdio: 'inherit', env: { ...process.env, DATABASE_URL: urlE2e } });
 executar('corepack pnpm --filter @agenda/api db:migrate');
 executar('corepack pnpm --filter @agenda/api db:seed');
+// Fase 6: o dia de pior caso (40 atendimentos de 15 min por profissional), visto pelos testes.
+executar('corepack pnpm --filter @agenda/api db:seed:pior-caso');
 console.log('[e2e] banco pronto (migrate deploy + seed)');

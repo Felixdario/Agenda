@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { MolduraCliente } from '@/components/comum/moldura-cliente';
-import { estiloBotao } from '@/components/ui/botao';
+import { estiloBotao } from '@/components/ui/botao-estilo';
 
 export default async function NaoEncontrado() {
   const t = await getTranslations('comum');

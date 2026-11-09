@@ -1,11 +1,15 @@
 import { cn } from '@/lib/cn';
 
+const SUFIXOS = /^(i{1,3}|iv|v|vi|jr\.?|sr\.?|filho|filha|neto|neta|sobrinho|júnior|junior)$/iu;
+
 /** Até duas iniciais do nome, sem depender de idioma ("Navalha & Café" → "NC"). */
 export function iniciaisDe(nome: string): string {
   const palavras = nome
     .split(/[\s&+\-–]+/u)
     .map((p) => p.trim())
     .filter((p) => p.length > 0 && /\p{L}/u.test(p));
+  // Sufixos não são sobrenome: "Montgomery III" → M, "Silva Filho" → S.
+  while (palavras.length > 1 && SUFIXOS.test(palavras.at(-1)!)) palavras.pop();
   const letras = palavras.length === 1 ? [palavras[0]!] : [palavras[0]!, palavras.at(-1)!];
   return letras
     .map((p) => p.match(/\p{L}/u)?.[0] ?? '')

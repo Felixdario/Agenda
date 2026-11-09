@@ -49,7 +49,6 @@ export function MenuConta({ slug }: { slug?: string }) {
   return (
     <Menu.Root>
       <Menu.Trigger
-        aria-label={t('menu')}
         className={cn(
           estiloBotao({ variante: 'fantasma', tamanho: 'md' }),
           'max-w-[200px] gap-2 pl-1 data-popup-open:bg-raised',

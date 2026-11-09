@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { MolduraCliente } from '@/components/comum/moldura-cliente';
-import { estiloBotao } from '@/components/ui/botao';
+import { estiloBotao } from '@/components/ui/botao-estilo';
 
 const SLUG_DEMO = process.env.NEXT_PUBLIC_SLUG_DEMO ?? 'navalha-e-cafe';
 

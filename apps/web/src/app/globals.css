@@ -25,8 +25,9 @@
   --warning-line: #f3d48a;
   --negative: #b4232b;
   --negative-bg: #fdecec;
-  --hatch: #dfe3ea;
-  --hatch-line: #c4cad4;
+  --hatch: #e7eaf0;
+  /* 3,5:1 contra a superfície: a hachura carrega significado (preparo e limpeza). */
+  --hatch-line: #7f8898;
   --float-shadow: 0 8px 24px rgb(0 0 0 / 0.08);
   --scrim: rgb(17 20 24 / 0.32);
 
@@ -66,7 +67,7 @@
     --negative: #f07178;
     --negative-bg: #2c1618;
     --hatch: #2b2f35;
-    --hatch-line: #3d424a;
+    --hatch-line: #7a8290;
     --float-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
     --scrim: rgb(0 0 0 / 0.55);
     --serie-1: #7c9cff;
@@ -99,7 +100,7 @@
   --negative: #f07178;
   --negative-bg: #2c1618;
   --hatch: #2b2f35;
-  --hatch-line: #3d424a;
+  --hatch-line: #7a8290;
   --float-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
   --scrim: rgb(0 0 0 / 0.55);
   --serie-1: #7c9cff;
@@ -174,6 +175,8 @@
     font-size: 14px;
     line-height: 20px;
     text-rendering: optimizeLegibility;
+    /* Dado de usuário sem espaço (e-mail, palavra de 60 letras) quebra em vez de vazar. */
+    overflow-wrap: break-word;
   }
   ::selection {
     background: var(--accent-soft);
@@ -261,6 +264,10 @@
 .veu[data-ending-style] {
   opacity: 0;
 }
+/* Fechar é resposta do sistema: mais curto que abrir, e o véu acompanha a folha. */
+.veu[data-ending-style] {
+  transition-duration: 180ms;
+}
 
 /* Diálogo centrado: não está preso a um gatilho, então cresce do centro. */
 .dialogo {
@@ -272,6 +279,9 @@
 .dialogo[data-ending-style] {
   opacity: 0;
   transform: scale(0.97);
+}
+.dialogo[data-ending-style] {
+  transition-duration: 150ms;
 }
 
 /* Menu e popover: nascem do gatilho. */
@@ -302,10 +312,10 @@
 .pilula-perdida {
   animation: pilula-perdida 240ms var(--ease-out) forwards;
 }
+/* Só encolhe: o texto riscado continua legível (contraste de texto, 4,5:1). */
 @keyframes pilula-perdida {
   to {
     transform: scale(0.9);
-    opacity: 0.6;
   }
 }
 @keyframes pilula-entra {
@@ -326,7 +336,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pressionavel:active:not(:disabled) {
+  .pressionavel:active:not(:disabled):not([aria-disabled='true']) {
     transform: none;
   }
   .folha,
@@ -344,12 +354,16 @@
     transform: none;
     opacity: 0;
   }
+  .folha[data-ending-style],
+  .veu[data-ending-style],
+  .dialogo[data-ending-style] {
+    transition-duration: 120ms;
+  }
   .passo-entra {
     animation: passo-fade 120ms ease;
   }
   .pilula-perdida {
     animation: none;
-    opacity: 0.6;
   }
   .pilula-entra {
     animation: passo-fade 120ms ease backwards;

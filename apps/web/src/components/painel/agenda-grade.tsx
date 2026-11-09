@@ -176,7 +176,7 @@ function CabecalhoColuna({
                     type="button"
                     onClick={() => aoRemoverExcecao(e)}
                     aria-label={t('removerExcecao', { rotulo })}
-                    className="inline-flex size-5 items-center justify-center rounded-full hover:bg-[var(--warning-line)]"
+                    className="-my-1 inline-flex size-6 items-center justify-center rounded-full hover:bg-[var(--warning-line)]"
                   >
                     <X aria-hidden className="size-3" />
                   </button>
@@ -361,6 +361,12 @@ function CartaoNaGrade({
   const encerrado = a.status === 'CONCLUIDO' || a.status === 'NAO_COMPARECEU';
   const conteudo = alturaTotal - preparo - limpeza;
   const curto = conteudo < 36;
+  const rotulo = t('painel.agenda.atendimentoRotulo', {
+    hora: f.intervalo(a.inicio, a.fim),
+    cliente: a.cliente.nome,
+    servico: a.servico.nome,
+    status: t(`status.${a.status}`),
+  });
   const medio = conteudo < 60;
   return (
     <button
@@ -368,20 +374,15 @@ function CartaoNaGrade({
       onClick={() => aoAbrir(a)}
       data-agendamento={a.id}
       aria-pressed={selecionado}
-      aria-label={t('painel.agenda.atendimentoRotulo', {
-        hora: f.intervalo(a.inicio, a.fim),
-        cliente: a.cliente.nome,
-        servico: a.servico.nome,
-        status: t(`status.${a.status}`),
-      })}
+      title={rotulo}
       className={cn(
-        'absolute inset-x-1.5 z-[2] flex flex-col overflow-hidden rounded-[10px] border text-left transition-[border-color,box-shadow] duration-150',
+        'absolute inset-x-1.5 z-[2] flex flex-col overflow-hidden rounded-[10px] border text-left transition-[border-color] duration-150',
         selecionado
           ? 'border-accent shadow-[0_0_0_1px_var(--accent)]'
           : 'border-control hover:border-muted',
         encerrado ? 'bg-ground' : 'bg-surface',
       )}
-      style={{ top: y(deBloco) + 1, height: Math.max(22, alturaTotal - 2) }}
+      style={{ top: y(deBloco) + 1, height: Math.max(24, alturaTotal - 2) }}
     >
       {preparo > 0 ? (
         <span aria-hidden className="hachura block shrink-0" style={{ height: preparo }} />
@@ -410,8 +411,12 @@ function CartaoNaGrade({
         </span>
         {medio ? null : <span className="texto-12 truncate text-muted">{a.servico.nome}</span>}
         {medio || a.status === 'CONFIRMADO' ? null : (
-          <span className="texto-12 truncate text-muted">{t(`status.${a.status}`)}</span>
+          <span aria-hidden className="texto-12 truncate text-muted">
+            {t(`status.${a.status}`)}
+          </span>
         )}
+        {/* Nome acessível = o texto visível + o que a altura do cartão esconde (WCAG 2.5.3). */}
+        <span className="sr-only">{`, ${a.servico.nome}, ${t(`status.${a.status}`)}`}</span>
       </span>
       {limpeza > 0 ? (
         <span aria-hidden className="hachura block shrink-0" style={{ height: limpeza }} />

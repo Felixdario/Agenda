@@ -255,7 +255,7 @@ function Formulario({
                 {t('verNaAgenda')}
               </Link>
             )}
-            <Botao type="submit" variante="primario" carregando={balcao.isPending}>
+            <Botao type="submit" variante="primario" carregando={balcao.isPending} exigeRede>
               {balcao.isPending ? t('criando') : t('criar')}
             </Botao>
           </div>

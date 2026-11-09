@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import type { CSSProperties } from 'react';
 import { Botao } from '@/components/ui/botao';
 import { cn } from '@/lib/cn';
+import { useOnline } from '@/lib/conexao';
 import { useFormatos } from '@/lib/formatos';
 import { dataLocalDe } from '@/lib/tempo';
 
@@ -32,14 +33,11 @@ export function Recusa({
 }) {
   const t = useTranslations();
   const f = useFormatos(fuso);
+  const online = useOnline();
   const diaPerdido = dataLocalDe(perdido, fuso);
 
   return (
-    <section
-      aria-labelledby="titulo-recusa"
-      className="passo-entra flex flex-col gap-5"
-      data-testid="recusa"
-    >
+    <section aria-labelledby="titulo-recusa" className="flex flex-col gap-5" data-testid="recusa">
       <div role="alert" className="flex flex-col gap-1">
         <h3 id="titulo-recusa" className="texto-20 font-semibold">
           {t('recusa.titulo')}
@@ -64,20 +62,8 @@ export function Recusa({
                 key={inicio}
                 type="button"
                 style={{ '--ordem': i } as CSSProperties}
-                disabled={marcando !== null}
+                disabled={marcando !== null || !online}
                 aria-busy={ocupado || undefined}
-                aria-label={
-                  nomeProfissional === null
-                    ? t('fluxo.rotuloHorarioQualquer', {
-                        data: f.dataLonga(inicio),
-                        hora: f.hora(inicio),
-                      })
-                    : t('fluxo.rotuloHorario', {
-                        data: f.dataLonga(inicio),
-                        hora: f.hora(inicio),
-                        profissional: nomeProfissional,
-                      })
-                }
                 onClick={() => aoEscolher(inicio)}
                 data-inicio={inicio}
                 className={cn(
@@ -93,6 +79,15 @@ export function Recusa({
                       <span className="texto-12 font-medium text-muted">{f.dataCurta(inicio)}</span>
                     ) : null}
                     <span>{f.hora(inicio)}</span>
+                    {/* O nome acessível começa pelo texto visível (WCAG 2.5.3) e completa com o resto. */}
+                    <span className="sr-only">
+                      {nomeProfissional === null
+                        ? t('fluxo.complementoHorarioQualquer', { data: f.dataLonga(inicio) })
+                        : t('fluxo.complementoHorario', {
+                            data: f.dataLonga(inicio),
+                            profissional: nomeProfissional,
+                          })}
+                    </span>
                   </>
                 )}
               </button>

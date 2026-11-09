@@ -307,11 +307,19 @@ function ConteudoDoFluxo({
                   : t('fluxo.diaSemHorarios')}
               </p>
               {proximoComVaga !== undefined ? (
-                <Botao variante="secundario" onClick={() => ir({ data: proximoComVaga })}>
+                <Botao
+                  variante="secundario"
+                  tamanho="lg"
+                  onClick={() => ir({ data: proximoComVaga })}
+                >
                   {t('fluxo.proximoDiaComVaga', { data: f.dataLocalLonga(proximoComVaga) })}
                 </Botao>
               ) : profissionalId !== null && remarcando === null ? (
-                <Botao variante="secundario" onClick={() => ir({ profissional: QUALQUER })}>
+                <Botao
+                  variante="secundario"
+                  tamanho="lg"
+                  onClick={() => ir({ profissional: QUALQUER })}
+                >
                   {t('fluxo.tentarQualquer')}
                 </Botao>
               ) : null}
@@ -444,6 +452,7 @@ function ConteudoDoFluxo({
           disabled={confirmando || eu.isPending}
           onClick={() => confirmar(inicio)}
           data-testid="confirmar"
+          exigeRede
         >
           {confirmando
             ? t('fluxo.confirmando')
@@ -456,12 +465,22 @@ function ConteudoDoFluxo({
 
   return (
     <div className="flex min-h-full flex-col">
+      {/* Troca de passo anunciada ao leitor de tela; a recusa tem role=alert própria. */}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {recusa === null
+          ? t('fluxo.anuncioPasso', {
+              atual: numero,
+              total: passos.length,
+              titulo: t(`fluxo.passos.${estado.passo}`),
+            })
+          : null}
+      </p>
       <div className="mb-4 flex h-8 items-center justify-between">
         {anterior !== null && recusa === null ? (
           <button
             type="button"
             onClick={() => ir({ passo: anterior })}
-            className="pressionavel texto-14 -ml-2 inline-flex h-8 items-center gap-1 rounded-full px-2 font-medium text-muted hover:bg-raised hover:text-text"
+            className="pressionavel texto-14 -my-2 -ml-3 inline-flex h-12 items-center gap-1 rounded-full px-3 font-medium text-muted hover:bg-raised hover:text-text"
           >
             <ChevronLeft aria-hidden className="size-4" />
             {t('comum.voltar')}
@@ -525,9 +544,13 @@ function ResumoEscolha({
         <Iniciais nome={nome} tamanho="sm" />
       )}
       <span className="texto-14 min-w-0 flex-1 font-medium">{rotulo}</span>
-      <Botao variante="link" tamanho="sm" className="texto-14" onClick={aoAgir}>
+      <button
+        type="button"
+        onClick={aoAgir}
+        className="texto-14 -my-2 -mr-1 h-12 shrink-0 rounded-full px-2 font-medium text-accent underline-offset-4 hover:underline"
+      >
         {acao}
-      </Botao>
+      </button>
     </div>
   );
 }

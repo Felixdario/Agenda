@@ -1,7 +1,7 @@
 'use client';
 
 import type { EstabelecimentoPublico, ServicoPublico } from '@agenda/shared';
-import { Clock } from 'lucide-react';
+import { ChevronRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -140,12 +140,13 @@ function ListaDeServicos({
                 <button
                   type="button"
                   onClick={() => aoEscolher(s)}
-                  aria-label={t('estabelecimento.agendarServico', { servico: s.nome })}
                   data-servico={s.nome}
-                  className="group flex min-h-[72px] w-full items-center gap-4 px-4 py-3 text-left transition-colors duration-150 hover:bg-ground focus-visible:-outline-offset-2"
+                  className="group flex min-h-[72px] w-full items-start gap-3 px-4 py-3 sm:items-center sm:gap-4 text-left transition-colors duration-150 hover:bg-ground focus-visible:-outline-offset-2"
                 >
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="texto-16 font-semibold break-words">{s.nome}</span>
+                    <span className="texto-16 font-semibold [overflow-wrap:anywhere]">
+                      {s.nome}
+                    </span>
                     <span className="texto-14 num text-muted">
                       {f.duracao(s.duracaoMin)}
                       {total > s.duracaoMin ? (
@@ -160,15 +161,18 @@ function ListaDeServicos({
                     {f.preco(s.precoCentavos)}
                   </span>
                   <span
-                    aria-hidden
                     className={estiloBotao({
                       variante: 'secundario',
                       tamanho: 'md',
-                      className: 'group-hover:border-muted max-[359px]:hidden',
+                      className: 'group-hover:border-muted max-sm:hidden',
                     })}
                   >
                     {t('estabelecimento.agendar')}
                   </span>
+                  <ChevronRight
+                    aria-hidden
+                    className="mt-0.5 size-5 shrink-0 text-muted sm:hidden"
+                  />
                 </button>
               </li>
             );

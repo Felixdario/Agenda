@@ -277,7 +277,12 @@ function FormServico({
       rodape={
         <>
           <Botao onClick={aoFechar}>{tc('cancelar')}</Botao>
-          <Botao variante="primario" carregando={salvar.isPending} onClick={() => void enviar()}>
+          <Botao
+            variante="primario"
+            carregando={salvar.isPending}
+            exigeRede
+            onClick={() => void enviar()}
+          >
             {salvar.isPending ? tc('salvando') : tc('salvar')}
           </Botao>
         </>

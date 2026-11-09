@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { relogioDoSistema } from '../../src/infra/relogio';
 import { CONTAS_DEMO, SENHA_DEMO, SLUG_DEMO, semearDemo } from '../../src/infra/seed/demo';
+import { semearPiorCaso } from '../../src/infra/seed/pior-caso';
 import { type ApiDeTeste, criarApi } from './apoio-http';
 
 let api: ApiDeTeste;
@@ -54,5 +55,18 @@ describe('seed demo', () => {
     expect(meus.body.length).toBeLessThanOrEqual(2);
     const pub = await api.http().get(`/estabelecimentos/${SLUG_DEMO}`);
     expect(pub.body).toMatchObject({ nome: 'Navalha & Café', fuso: 'America/Sao_Paulo' });
+  });
+
+  it('pior caso (fase 6): 40 atendimentos de 15 min num dia, idempotente e só naquele dia', async () => {
+    const agora = relogioDoSistema.agora();
+    await semearDemo(api.prisma, { agora, hasher: api.deps.hasher });
+    const antes = await api.prisma.agendamento.count();
+    const r1 = await semearPiorCaso(api.prisma, { agora });
+    const depois1 = await api.prisma.agendamento.count();
+    const r2 = await semearPiorCaso(api.prisma, { agora });
+    expect(await api.prisma.agendamento.count()).toBe(depois1);
+    expect(r2).toEqual(r1);
+    expect(r1.porProfissional['Rafael Moura']).toBe(40);
+    expect(depois1 - antes).toBe(Object.values(r1.porProfissional).reduce((a, b) => a + b, 0));
   });
 });

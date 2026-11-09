@@ -174,7 +174,7 @@ function Conteudo({
   dialogos: (profissionais: { id: string; nome: string }[]) => ReactNode;
 }) {
   const t = useTranslations();
-  const { estab } = usePainel();
+  const { estab, dono } = usePainel();
   const f = useFormatos(estab.fuso);
   const agenda = useAgendaDoDia(data);
   const ehHoje = data === hoje;
@@ -294,7 +294,20 @@ function Conteudo({
             <EstadoErro erro={agenda.error} temDados aoTentar={() => void agenda.refetch()} />
           ) : null}
           {dados.profissionais.length === 0 ? (
-            <EstadoVazio>{t('painel.agenda.semProfissionais')}</EstadoVazio>
+            <EstadoVazio
+              acao={
+                dono ? (
+                  <Link
+                    href="/painel/profissionais"
+                    className={estiloBotao({ variante: 'secundario', tamanho: 'md' })}
+                  >
+                    {t('painel.profissionais.novo')}
+                  </Link>
+                ) : undefined
+              }
+            >
+              {t('painel.agenda.semProfissionais')}
+            </EstadoVazio>
           ) : (
             <div
               className={

@@ -110,6 +110,7 @@ export function DetalheAtendimento({
                   variante="primario"
                   icone={<Check aria-hidden className="size-4" />}
                   carregando={pendente('confirmar')}
+                  exigeRede
                   disabled={mudar.isPending}
                   onClick={() => executar('confirmar')}
                 >
@@ -122,6 +123,7 @@ export function DetalheAtendimento({
                     variante="primario"
                     icone={<Check aria-hidden className="size-4" />}
                     carregando={pendente('concluir')}
+                    exigeRede
                     disabled={mudar.isPending || !comecou}
                     onClick={() => executar('concluir')}
                   >
@@ -130,6 +132,7 @@ export function DetalheAtendimento({
                   <Botao
                     icone={<UserX aria-hidden className="size-4" />}
                     carregando={pendente('nao-compareceu')}
+                    exigeRede
                     disabled={mudar.isPending || !comecou}
                     onClick={() => executar('nao-compareceu')}
                   >
@@ -139,6 +142,7 @@ export function DetalheAtendimento({
               ) : null}
               <Botao
                 icone={<CalendarClock aria-hidden className="size-4" />}
+                exigeRede
                 disabled={mudar.isPending}
                 onClick={aoRemarcar}
               >
@@ -202,7 +206,12 @@ export function DetalheAtendimento({
 
       {ativo ? (
         <div className="border-t border-border pt-4">
-          <Botao variante="perigo" onClick={() => setCancelar(true)} disabled={mudar.isPending}>
+          <Botao
+            variante="perigo"
+            onClick={() => setCancelar(true)}
+            exigeRede
+            disabled={mudar.isPending}
+          >
             {t('painel.detalhe.cancelar')}
           </Botao>
         </div>

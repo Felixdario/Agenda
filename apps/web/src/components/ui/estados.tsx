@@ -4,6 +4,7 @@ import { CircleAlert, WifiOff } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/cn';
+import { useOnline } from '@/lib/conexao';
 import { ERRO_DE_REDE, ehErroApi } from '@/lib/erros';
 import { Botao } from './botao';
 
@@ -15,9 +16,14 @@ export function Esqueleto({ className }: { className?: string }) {
 /** Região que avisa leitores de tela que algo está carregando. */
 export function Carregando({ children, className }: { children: ReactNode; className?: string }) {
   const t = useTranslations('comum');
+  const online = useOnline();
   return (
     <div role="status" aria-busy="true" className={className}>
-      <span className="sr-only">{t('carregando')}</span>
+      {online ? (
+        <span className="sr-only">{t('carregando')}</span>
+      ) : (
+        <p className="texto-14 mb-3 text-muted">{t('carregandoOffline')}</p>
+      )}
       {children}
     </div>
   );

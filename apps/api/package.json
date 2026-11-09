@@ -15,7 +15,8 @@
     "db:migrate": "prisma migrate deploy",
     "db:migrate:dev": "prisma migrate dev",
     "test:integration": "vitest run --project integration",
-    "db:seed": "node --import @swc-node/register/esm-register prisma/seed.ts"
+    "db:seed": "node --import @swc-node/register/esm-register prisma/seed.ts",
+    "db:seed:pior-caso": "node --import @swc-node/register/esm-register prisma/seed-pior-caso.ts"
   },
   "dependencies": {
     "@agenda/shared": "workspace:*",
